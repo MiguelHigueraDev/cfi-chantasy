@@ -1,0 +1,5 @@
+.site-grid {
+    display: grid;
+    grid-template-rows: 1fr 10fr 1fr;
+    grid-gap: 10px;
+}
