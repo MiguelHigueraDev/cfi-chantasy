@@ -1,0 +1,13 @@
+<section class="mx-auto w-full flex justify-center">
+    <form class="space-y-3">
+        <div class="flex flex-col gap-1">
+            <label for="username">Nombre de usuario</label>
+            <input type="username" class="" id="username" [(ngModel)]="username" name="username" required>
+        </div>
+        <div class="flex flex-col gap-1">
+            <label for="password">Contraseña</label>
+            <input type="password" class="" id="password" [(ngModel)]="password" name="password" required>
+        </div>
+        <button type="submit" class="btn" (click)="login()">Iniciar sesión</button>
+    </form>
+</section>

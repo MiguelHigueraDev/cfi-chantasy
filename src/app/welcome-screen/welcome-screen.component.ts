@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-welcome-screen',
+  selector: 'ch-welcome-screen',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './welcome-screen.component.html',
   styles: ``
 })
