@@ -1,0 +1,18 @@
+<section class="mx-auto w-full flex justify-center">
+    <form class="space-y-4 w-full p-4 max-w-[400px]">
+        <div class="flex flex-col gap-1">
+            <label for="registerCode" class="label">Código de registro</label>
+            <input type="text" class="input" id="registerCode" [(ngModel)]="registerCode" name="registerCode" required>
+        </div>
+        <div class="flex flex-col gap-1">
+            <label for="username" class="label">Nombre de usuario</label>
+            <input type="username" class="input" id="username" [(ngModel)]="username" name="username" required>
+        </div>
+        <div class="flex flex-col gap-1">
+            <label for="password" class="label">Contraseña</label>
+            <input type="password" class="input" id="password" [(ngModel)]="password" name="password" required>
+        </div>
+        <button type="submit" class="btn" (click)="register()">Registrarse</button>
+        <a class="block hover:text-purple-500" routerLink="/login">Si ya tienes cuenta inicia sesión aquí</a>
+    </form>
+</section>
