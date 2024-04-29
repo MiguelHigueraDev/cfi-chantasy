@@ -1,6 +1,6 @@
 package dev.miguelhiguera.chantasy.services;
 
-import dev.miguelhiguera.chantasy.models.User;
+import dev.miguelhiguera.chantasy.entities.User;
 
 import java.util.List;
 

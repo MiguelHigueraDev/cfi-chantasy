@@ -1,6 +1,6 @@
 package dev.miguelhiguera.chantasy.repositories;
 
-import dev.miguelhiguera.chantasy.models.User;
+import dev.miguelhiguera.chantasy.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

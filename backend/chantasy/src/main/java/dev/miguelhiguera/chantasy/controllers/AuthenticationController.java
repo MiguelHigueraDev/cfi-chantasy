@@ -2,7 +2,7 @@ package dev.miguelhiguera.chantasy.controllers;
 
 import dev.miguelhiguera.chantasy.dtos.LoginUserDto;
 import dev.miguelhiguera.chantasy.dtos.RegisterUserDto;
-import dev.miguelhiguera.chantasy.models.User;
+import dev.miguelhiguera.chantasy.entities.User;
 import dev.miguelhiguera.chantasy.responses.LoginResponse;
 import dev.miguelhiguera.chantasy.services.AuthenticationService;
 import dev.miguelhiguera.chantasy.services.JwtService;

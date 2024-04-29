@@ -1,6 +1,6 @@
 package dev.miguelhiguera.chantasy.controllers;
 
-import dev.miguelhiguera.chantasy.models.User;
+import dev.miguelhiguera.chantasy.entities.User;
 import dev.miguelhiguera.chantasy.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

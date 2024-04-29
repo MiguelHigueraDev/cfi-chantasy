@@ -2,7 +2,7 @@ package dev.miguelhiguera.chantasy.services;
 
 import dev.miguelhiguera.chantasy.dtos.LoginUserDto;
 import dev.miguelhiguera.chantasy.dtos.RegisterUserDto;
-import dev.miguelhiguera.chantasy.models.User;
+import dev.miguelhiguera.chantasy.entities.User;
 import dev.miguelhiguera.chantasy.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

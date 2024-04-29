@@ -1,4 +1,4 @@
-package dev.miguelhiguera.chantasy.models;
+package dev.miguelhiguera.chantasy.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
