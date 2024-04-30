@@ -23,4 +23,7 @@ public class Country {
 
     @Column(nullable = false)
     private String flagUrl;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }

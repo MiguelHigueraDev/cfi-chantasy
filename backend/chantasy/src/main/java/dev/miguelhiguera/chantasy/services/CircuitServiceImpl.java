@@ -28,7 +28,7 @@ public class CircuitServiceImpl implements CircuitService {
     public Optional<Circuit> getCircuit(Long id) throws EntityNotFoundException {
         Optional<Circuit> optionalCircuit = circuitRepository.findById(id);
 
-        if (optionalCircuit.isEmpty()) {
+        if (optionalCircuit.isEmpty() || optionalCircuit.get().isDeleted()) {
             throw new EntityNotFoundException("Circuit not found.");
         }
 
@@ -38,7 +38,11 @@ public class CircuitServiceImpl implements CircuitService {
     @Override
     public List<Circuit> allCircuits() {
         List<Circuit> circuits = new ArrayList<>();
-        circuitRepository.findAll().forEach(circuits::add);
+        circuitRepository.findAll().forEach(circuit -> {
+            if (!circuit.isDeleted()) {
+                circuits.add(circuit);
+            }
+        });
         return circuits;
     }
 
@@ -82,7 +86,9 @@ public class CircuitServiceImpl implements CircuitService {
             throw new EntityNotFoundException("Circuit not found.");
         }
 
-        circuitRepository.deleteById(id);
+        Circuit circuit = optionalCircuit.get();
+        circuit.setDeleted(true);
+        circuitRepository.save(circuit);
     }
 
     private Country getCountry(Long countryId) {

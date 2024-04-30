@@ -21,4 +21,7 @@ public class Circuit {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "country_id", referencedColumnName = "id", nullable = false)
     private Country country;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }

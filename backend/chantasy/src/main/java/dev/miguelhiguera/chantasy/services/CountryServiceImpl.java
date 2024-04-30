@@ -33,7 +33,11 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public List<Country> allCountries() {
         List<Country> countries = new ArrayList<>();
-        countryRepository.findAll().forEach(countries::add);
+        countryRepository.findAll().forEach(country -> {
+            if (!country.isDeleted()) {
+                countries.add(country);
+            }
+        });
         return countries;
     }
 
@@ -57,7 +61,7 @@ public class CountryServiceImpl implements CountryService {
     public Country updateCountry(Long id, CountryDto input) throws EntityNotFoundException {
         Optional<Country> optionalCountry = countryRepository.findById(id);
 
-        if (optionalCountry.isEmpty()) {
+        if (optionalCountry.isEmpty() || optionalCountry.get().isDeleted()) {
             throw new EntityNotFoundException("Country not found.");
         }
 
@@ -78,6 +82,7 @@ public class CountryServiceImpl implements CountryService {
         }
 
         Country country = optionalCountry.get();
-        countryRepository.delete(country);
+        country.setDeleted(true);
+        countryRepository.save(country);
     }
 }
