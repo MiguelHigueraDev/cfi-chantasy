@@ -21,11 +21,11 @@ public class Driver {
     @Column(unique = true, nullable = false)
     private String code;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "country_id", referencedColumnName = "id", nullable = false)
     private Country country;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "team_id", referencedColumnName = "id", nullable = false)
     private Team team;
 
