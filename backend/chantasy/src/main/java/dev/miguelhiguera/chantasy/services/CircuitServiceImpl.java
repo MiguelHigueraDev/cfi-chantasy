@@ -5,6 +5,8 @@ import dev.miguelhiguera.chantasy.entities.Circuit;
 import dev.miguelhiguera.chantasy.entities.Country;
 import dev.miguelhiguera.chantasy.repositories.CircuitRepository;
 import dev.miguelhiguera.chantasy.repositories.CountryRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +25,17 @@ public class CircuitServiceImpl implements CircuitService {
 
 
     @Override
+    public Optional<Circuit> getCircuit(Long id) throws EntityNotFoundException {
+        Optional<Circuit> optionalCircuit = circuitRepository.findById(id);
+
+        if (optionalCircuit.isEmpty()) {
+            throw new EntityNotFoundException("Circuit not found.");
+        }
+
+        return optionalCircuit;
+    }
+
+    @Override
     public List<Circuit> allCircuits() {
         List<Circuit> circuits = new ArrayList<>();
         circuitRepository.findAll().forEach(circuits::add);
@@ -32,20 +45,53 @@ public class CircuitServiceImpl implements CircuitService {
     @Override
     public Circuit createCircuit(CircuitDto input) {
         Optional<Circuit> optionalCircuit = circuitRepository.findByName(input.getName());
-        Optional<Country> optionalCountry = countryRepository.findById(input.getCountryId());
-
-        if (optionalCountry.isEmpty()) {
-            throw new RuntimeException("Invalid country ID.");
-        }
+        Country country = getCountry(input.getCountryId());
 
         if (optionalCircuit.isPresent()) {
-            throw new RuntimeException("Circuit already exists.");
+            throw new EntityExistsException("Circuit already exists.");
         }
 
         Circuit circuit = new Circuit();
         circuit.setName(input.getName());
-        circuit.setCountry(optionalCountry.get());
+        circuit.setCountry(country);
 
         return circuitRepository.save(circuit);
+    }
+
+    @Override
+    public Circuit updateCircuit(Long id, CircuitDto input) throws EntityNotFoundException {
+        Optional<Circuit> optionalCircuit = circuitRepository.findById(id);
+        Country country = getCountry(input.getCountryId());
+
+        if (optionalCircuit.isEmpty()) {
+            throw new EntityNotFoundException("Circuit not found.");
+        }
+
+        Circuit circuit = optionalCircuit.get();
+        circuit.setName(input.getName());
+        circuit.setCountry(country);
+
+        return circuitRepository.save(circuit);
+    }
+
+    @Override
+    public void deleteCircuit(Long id) throws EntityNotFoundException {
+        Optional<Circuit> optionalCircuit = circuitRepository.findById(id);
+
+        if (optionalCircuit.isEmpty()) {
+            throw new EntityNotFoundException("Circuit not found.");
+        }
+
+        circuitRepository.deleteById(id);
+    }
+
+    private Country getCountry(Long countryId) {
+        Optional<Country> optionalCountry = countryRepository.findById(countryId);
+
+        if (optionalCountry.isEmpty()) {
+            throw new EntityNotFoundException("Invalid country ID.");
+        }
+
+        return optionalCountry.get();
     }
 }

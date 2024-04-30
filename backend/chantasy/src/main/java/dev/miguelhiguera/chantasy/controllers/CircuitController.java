@@ -3,11 +3,13 @@ package dev.miguelhiguera.chantasy.controllers;
 import dev.miguelhiguera.chantasy.dtos.CircuitDto;
 import dev.miguelhiguera.chantasy.entities.Circuit;
 import dev.miguelhiguera.chantasy.services.CircuitService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
 @RequestMapping("/api/circuits")
@@ -20,13 +22,35 @@ public class CircuitController {
         this.circuitService = circuitService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Circuit> getCircuit(@PathVariable Long id) {
+        Optional<Circuit> optionalCircuit = circuitService.getCircuit(id);
+
+        if (optionalCircuit.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(optionalCircuit.get());
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<Circuit>> allCircuits() {
         return ResponseEntity.ok(circuitService.allCircuits());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Circuit> createCircuit(@RequestBody CircuitDto input) {
+    public ResponseEntity<Circuit> createCircuit(@Valid @RequestBody CircuitDto input) {
         return ResponseEntity.ok(circuitService.createCircuit(input));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Circuit> updateCircuit(@PathVariable Long id, @Valid @RequestBody CircuitDto input) {
+        return ResponseEntity.ok(circuitService.updateCircuit(id, input));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCircuit(@PathVariable Long id) {
+        circuitService.deleteCircuit(id);
+        return ResponseEntity.noContent().build();
     }
 }

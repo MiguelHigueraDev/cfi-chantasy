@@ -3,6 +3,8 @@ package dev.miguelhiguera.chantasy.services;
 import dev.miguelhiguera.chantasy.dtos.CountryDto;
 import dev.miguelhiguera.chantasy.entities.Country;
 import dev.miguelhiguera.chantasy.repositories.CountryRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +20,17 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    public Optional<Country> getCountry(Long id) throws EntityNotFoundException {
+        Optional<Country> optionalCountry = countryRepository.findById(id);
+
+        if (optionalCountry.isEmpty()) {
+            throw new EntityNotFoundException("Country not found.");
+        }
+
+        return optionalCountry;
+    }
+
+    @Override
     public List<Country> allCountries() {
         List<Country> countries = new ArrayList<>();
         countryRepository.findAll().forEach(countries::add);
@@ -29,7 +42,7 @@ public class CountryServiceImpl implements CountryService {
         Optional<Country> optionalCountry = countryRepository.findByName(input.getName());
 
         if (optionalCountry.isPresent()) {
-            throw new RuntimeException("Country already exists.");
+            throw new EntityExistsException("Country already exists.");
         }
 
         Country country = new Country();
@@ -38,5 +51,33 @@ public class CountryServiceImpl implements CountryService {
         country.setFlagUrl(input.getFlagUrl());
 
         return countryRepository.save(country);
+    }
+
+    @Override
+    public Country updateCountry(Long id, CountryDto input) throws EntityNotFoundException {
+        Optional<Country> optionalCountry = countryRepository.findById(id);
+
+        if (optionalCountry.isEmpty()) {
+            throw new EntityNotFoundException("Country not found.");
+        }
+
+        Country country = optionalCountry.get();
+        country.setName(input.getName());
+        country.setCode(input.getCode());
+        country.setFlagUrl(input.getFlagUrl());
+
+        return countryRepository.save(country);
+    }
+
+    @Override
+    public void deleteCountry(Long id) throws EntityNotFoundException {
+        Optional<Country> optionalCountry = countryRepository.findById(id);
+
+        if (optionalCountry.isEmpty()) {
+            throw new EntityNotFoundException("Country not found.");
+        }
+
+        Country country = optionalCountry.get();
+        countryRepository.delete(country);
     }
 }

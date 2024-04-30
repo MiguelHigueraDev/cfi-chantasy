@@ -9,7 +9,6 @@ import dev.miguelhiguera.chantasy.repositories.DriverRepository;
 import dev.miguelhiguera.chantasy.repositories.TeamRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -53,7 +52,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver createDriver(@Validated DriverDto input) {
+    public Driver createDriver(DriverDto input) {
         Optional<Driver> optionalDriver = driverRepository.findByName(input.getName());
         Country country = getCountry(input.getCountryId());
         Team team = getTeam(input.getTeamId());
