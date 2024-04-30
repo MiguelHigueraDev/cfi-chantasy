@@ -12,6 +12,6 @@ public class TeamDto {
     private String name;
 
     @NotBlank(message = "La URL del logo del equipo no puede estar vacía.")
-    @Size(min = 255, message = "La URL del logo del equipo debe tener 255 caracteres como máximo.")
+    @Size(max = 255, message = "La URL del logo del equipo debe tener 255 caracteres como máximo.")
     private String logoUrl;
 }

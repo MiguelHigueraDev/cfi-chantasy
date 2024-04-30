@@ -16,6 +16,6 @@ public class CountryDto {
     private String code;
 
     @NotBlank(message = "La URL de la bandera del país no puede estar vacía.")
-    @Size(min = 255, message = "La URL de la bandera del país debe tener 255 caracteres como máximo.")
+    @Size(max = 255, message = "La URL de la bandera del país debe tener 255 caracteres como máximo.")
     private String flagUrl;
 }
