@@ -105,7 +105,7 @@ public class DriverServiceImpl implements DriverService {
     private Country getCountry(Long countryId) {
         Optional<Country> optionalCountry = countryRepository.findById(countryId);
 
-        if (optionalCountry.isEmpty()) {
+        if (optionalCountry.isEmpty() || optionalCountry.get().isDeleted()) {
             throw new EntityNotFoundException("Invalid country ID.");
         }
 
@@ -115,7 +115,7 @@ public class DriverServiceImpl implements DriverService {
     private Team getTeam(Long teamId) {
         Optional<Team> optionalTeam = teamRepository.findById(teamId);
 
-        if (optionalTeam.isEmpty()) {
+        if (optionalTeam.isEmpty() || optionalTeam.get().isDeleted()) {
             throw new EntityNotFoundException("Invalid team ID.");
         }
 

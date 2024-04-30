@@ -94,7 +94,7 @@ public class CircuitServiceImpl implements CircuitService {
     private Country getCountry(Long countryId) {
         Optional<Country> optionalCountry = countryRepository.findById(countryId);
 
-        if (optionalCountry.isEmpty()) {
+        if (optionalCountry.isEmpty() || optionalCountry.get().isDeleted()) {
             throw new EntityNotFoundException("Invalid country ID.");
         }
 
