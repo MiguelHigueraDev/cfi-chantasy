@@ -23,7 +23,7 @@ public class CountryServiceImpl implements CountryService {
     public Optional<Country> getCountry(Long id) throws EntityNotFoundException {
         Optional<Country> optionalCountry = countryRepository.findById(id);
 
-        if (optionalCountry.isEmpty()) {
+        if (optionalCountry.isEmpty() || optionalCountry.get().isDeleted()) {
             throw new EntityNotFoundException("Country not found.");
         }
 
