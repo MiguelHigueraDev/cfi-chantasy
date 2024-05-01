@@ -1,15 +1,17 @@
 package dev.miguelhiguera.chantasy.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @Table(name = "circuits")
 @Entity
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Circuit {
 
     @Id
@@ -26,8 +28,4 @@ public class Circuit {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
-
-    public Circuit() {
-
-    }
 }

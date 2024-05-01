@@ -1,17 +1,19 @@
 package dev.miguelhiguera.chantasy.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Table(name = "races")
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Race {
 
     @Id
@@ -56,8 +58,4 @@ public class Race {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
-
-    public Race() {
-
-    }
 }

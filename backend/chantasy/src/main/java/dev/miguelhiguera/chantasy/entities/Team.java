@@ -1,15 +1,17 @@
 package dev.miguelhiguera.chantasy.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
 @Table(name = "teams")
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Team {
 
     @Id
@@ -25,8 +27,4 @@ public class Team {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
-
-    public Team() {
-
-    }
 }

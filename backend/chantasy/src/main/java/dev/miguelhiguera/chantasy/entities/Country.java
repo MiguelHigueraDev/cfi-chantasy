@@ -1,15 +1,17 @@
 package dev.miguelhiguera.chantasy.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
 @Table(name = "countries")
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Country {
 
     @Id
@@ -28,8 +30,4 @@ public class Country {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
-
-    public Country() {
-
-    }
 }

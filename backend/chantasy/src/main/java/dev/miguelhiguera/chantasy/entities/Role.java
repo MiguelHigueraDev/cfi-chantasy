@@ -1,19 +1,21 @@
 package dev.miguelhiguera.chantasy.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @Table(name = "roles")
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
 
     @Id
@@ -35,8 +37,4 @@ public class Role {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
-
-    public Role() {
-
-    }
 }
