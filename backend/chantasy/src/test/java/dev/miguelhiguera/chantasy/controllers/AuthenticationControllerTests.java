@@ -56,12 +56,7 @@ public class AuthenticationControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                         {
-                          "username": "username",
-                          "password": "password"
-                         }
-                         """))
+                        .content("{}"))
                 .andExpect(status().isOk());
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+
 @RequestMapping("/api/countries")
 @RestController
 public class CountryController {
