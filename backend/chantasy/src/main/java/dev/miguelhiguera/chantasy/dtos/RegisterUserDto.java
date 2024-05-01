@@ -2,9 +2,15 @@ package dev.miguelhiguera.chantasy.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterUserDto {
     @NotBlank(message = "Debes ingresar un nombre de usuario para iniciar sesión.")
     @Pattern(regexp = "^[a-zA-Z0-9_]{4,15}$", message = "El nombre de usuario para iniciar sesión debe contener entre 4 y 15 caracteres, y solo puede contener letras, números y guiones bajos.")

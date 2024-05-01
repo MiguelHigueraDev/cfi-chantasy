@@ -2,9 +2,15 @@ package dev.miguelhiguera.chantasy.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CountryDto {
 
     @NotBlank(message = "El nombre del país no puede estar vacío.")
