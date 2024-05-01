@@ -2,6 +2,7 @@ package dev.miguelhiguera.chantasy.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "users")
+@Builder
 public class User implements UserDetails {
 
     @Id
@@ -35,6 +37,10 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
+
+    public User() {
+
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

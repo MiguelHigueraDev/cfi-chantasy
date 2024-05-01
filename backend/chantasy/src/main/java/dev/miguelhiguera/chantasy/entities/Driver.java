@@ -1,6 +1,7 @@
 package dev.miguelhiguera.chantasy.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "drivers")
 @Entity
+@Builder
 public class Driver {
 
     @Id
@@ -32,4 +34,7 @@ public class Driver {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
+    public Driver() {
+
+    }
 }
