@@ -1,4 +1,4 @@
-package dev.miguelhiguera.chantasy.services;
+package dev.miguelhiguera.chantasy.services.impl;
 
 import dev.miguelhiguera.chantasy.dtos.LoginUserDto;
 import dev.miguelhiguera.chantasy.dtos.RegisterUserDto;

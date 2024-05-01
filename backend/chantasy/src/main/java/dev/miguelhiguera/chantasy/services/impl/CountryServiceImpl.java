@@ -1,8 +1,9 @@
-package dev.miguelhiguera.chantasy.services;
+package dev.miguelhiguera.chantasy.services.impl;
 
 import dev.miguelhiguera.chantasy.dtos.CountryDto;
 import dev.miguelhiguera.chantasy.entities.Country;
 import dev.miguelhiguera.chantasy.repositories.CountryRepository;
+import dev.miguelhiguera.chantasy.services.CountryService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;

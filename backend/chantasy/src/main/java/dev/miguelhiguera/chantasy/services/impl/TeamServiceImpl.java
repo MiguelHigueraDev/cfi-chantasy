@@ -1,8 +1,9 @@
-package dev.miguelhiguera.chantasy.services;
+package dev.miguelhiguera.chantasy.services.impl;
 
 import dev.miguelhiguera.chantasy.dtos.TeamDto;
 import dev.miguelhiguera.chantasy.entities.Team;
 import dev.miguelhiguera.chantasy.repositories.TeamRepository;
+import dev.miguelhiguera.chantasy.services.TeamService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
