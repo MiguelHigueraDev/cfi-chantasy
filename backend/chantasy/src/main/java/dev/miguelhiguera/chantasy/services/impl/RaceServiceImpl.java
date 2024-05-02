@@ -63,6 +63,7 @@ public class RaceServiceImpl implements RaceService {
                 .positionPoints(input.getPositionPoints())
                 .predictionStartDate(dateStringToLocalDateTime(input.getPredictionStartDate()))
                 .predictionEndDate(dateStringToLocalDateTime(input.getPredictionEndDate()))
+                .maxFreePredictions(input.getMaxFreePredictions())
                 .isQualifier(input.isQualifier()).build();
 
         return raceRepository.save(race);
@@ -87,6 +88,7 @@ public class RaceServiceImpl implements RaceService {
         race.setPositionPoints(input.getPositionPoints());
         race.setPredictionStartDate(dateStringToLocalDateTime(input.getPredictionStartDate()));
         race.setPredictionEndDate(dateStringToLocalDateTime(input.getPredictionEndDate()));
+        race.setMaxFreePredictions(input.getMaxFreePredictions());
         race.setQualifier(input.isQualifier());
 
         return raceRepository.save(race);

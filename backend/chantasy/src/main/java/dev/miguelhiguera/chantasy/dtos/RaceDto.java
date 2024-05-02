@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 @Data
 @Builder
@@ -52,6 +53,10 @@ public class RaceDto {
 
     @NotBlank(message = "La fecha de fin de la predicción no puede estar vacía.")
     private String predictionEndDate;
+
+    @NotNull(message = "El número máximo de predicciones libres no puede estar vacío.")
+    @Range(min = 1, max = 10, message = "El número máximo de predicciones libres debe estar entre 1 y 10.")
+    private Short maxFreePredictions;
 
     @NotNull(message = "El tipo de carrera no puede estar vacío.")
     private boolean isQualifier;

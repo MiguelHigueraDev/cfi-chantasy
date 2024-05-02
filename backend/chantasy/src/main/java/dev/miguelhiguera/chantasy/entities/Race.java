@@ -54,6 +54,9 @@ public class Race {
     private LocalDateTime predictionEndDate;
 
     @Column(nullable = false)
+    private Short maxFreePredictions;
+
+    @Column(nullable = false)
     private boolean isQualifier;
 
     @Column(name = "is_deleted")
