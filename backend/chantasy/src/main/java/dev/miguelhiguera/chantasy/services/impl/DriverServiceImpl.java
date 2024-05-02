@@ -78,7 +78,7 @@ public class DriverServiceImpl implements DriverService {
         Country country = getCountry(input.getCountryId());
         Team team = getTeam(input.getTeamId());
 
-        if (optionalDriver.isEmpty()) {
+        if (optionalDriver.isEmpty() || optionalDriver.get().isDeleted()) {
             throw new EntityNotFoundException("Driver not found.");
         }
 

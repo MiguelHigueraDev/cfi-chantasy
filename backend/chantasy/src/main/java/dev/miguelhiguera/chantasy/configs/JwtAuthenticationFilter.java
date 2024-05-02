@@ -1,6 +1,6 @@
 package dev.miguelhiguera.chantasy.configs;
 
-import dev.miguelhiguera.chantasy.services.JwtService;
+import dev.miguelhiguera.chantasy.services.impl.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
