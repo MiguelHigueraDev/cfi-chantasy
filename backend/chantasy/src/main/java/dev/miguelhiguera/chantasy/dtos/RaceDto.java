@@ -1,11 +1,14 @@
 package dev.miguelhiguera.chantasy.dtos;
 
+import dev.miguelhiguera.chantasy.dtos.predictions.QuestionDto;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -60,4 +63,6 @@ public class RaceDto {
 
     @NotNull(message = "El tipo de carrera no puede estar vacío.")
     private boolean isQualifier;
+
+    private List<QuestionDto> questions;
 }
