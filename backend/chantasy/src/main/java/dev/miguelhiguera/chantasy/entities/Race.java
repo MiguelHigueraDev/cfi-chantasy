@@ -71,9 +71,6 @@ public class Race {
     @OneToMany(mappedBy = "race")
     private Set<Question> questions;
 
-    @OneToMany(mappedBy = "race")
-    private Set<Answer> answers;
-
     /**
      * All the free predictions that users have made.
      */

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 /**
  * Represents the questions that the users can answer for each race.
  */
@@ -28,4 +30,7 @@ public class Question {
 
     @Column(nullable = false)
     private Short points;
+
+    @OneToMany(mappedBy = "question")
+    private Set<Answer> answers;
 }
