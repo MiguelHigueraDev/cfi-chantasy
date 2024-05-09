@@ -8,10 +8,12 @@ import dev.miguelhiguera.chantasy.repositories.predictions.QuestionRepository;
 import dev.miguelhiguera.chantasy.services.predictions.QuestionService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final RaceRepository raceRepository;

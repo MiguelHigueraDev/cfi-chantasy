@@ -1,5 +1,6 @@
 package dev.miguelhiguera.chantasy.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.miguelhiguera.chantasy.entities.predictions.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -68,6 +69,7 @@ public class Race {
      * All the questions that the users can answer.
      */
 
+    @JsonIgnore
     @OneToMany(mappedBy = "race")
     private Set<Question> questions;
 
@@ -85,6 +87,6 @@ public class Race {
     @OneToMany(mappedBy = "race")
     private Set<Dnf> dnfs;
 
-    @OneToMany(mappedBy = "race")
+    @OneToMany(mappedBy = "race", cascade = CascadeType.ALL)
     private Set <DnfPrediction> dnfPredictions;
 }

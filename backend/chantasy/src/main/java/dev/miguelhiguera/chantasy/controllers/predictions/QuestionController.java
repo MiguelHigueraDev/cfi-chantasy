@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@RequestMapping("/api/questions")
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+@RestController
 public class QuestionController {
 
     private final QuestionService questionService;
@@ -20,7 +22,7 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/question/{id}")
     public ResponseEntity<Question> getQuestion(@PathVariable Long id) {
         Optional<Question> optionalQuestion = questionService.getQuestion(id);
 
@@ -31,17 +33,17 @@ public class QuestionController {
         return ResponseEntity.ok(optionalQuestion.get());
     }
 
-    @GetMapping("/{raceId}")
+    @GetMapping("/race/{raceId}")
     public ResponseEntity<List<Question>> allQuestions(@PathVariable Long raceId) {
         return ResponseEntity.ok(questionService.allQuestionsForRace(raceId));
     }
 
-    @PostMapping("/{raceId}")
+    @PostMapping("/race/{raceId}")
     public ResponseEntity<Question> createQuestion(@PathVariable Long raceId, @Valid @RequestBody QuestionDto input) {
         return ResponseEntity.ok(questionService.createQuestion(input, raceId));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/question/{id}")
     public ResponseEntity<Question> updateQuestion(@PathVariable Long id, @Valid @RequestBody QuestionDto input) {
         return ResponseEntity.ok(questionService.updateQuestion(id, input));
     }
