@@ -29,7 +29,6 @@ public class RaceDto {
     private Short maxDnfAwarded;
 
     // TODO: Check if ranges are valid
-
     @NotNull(message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente no puede estar vacío.")
     @Min(value = 1, message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente debe ser mayor a 0.")
     @Max(value = 20, message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente debe ser menor a 21.")
