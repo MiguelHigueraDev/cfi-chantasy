@@ -9,7 +9,6 @@ import dev.miguelhiguera.chantasy.repositories.UserRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.AnswerRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.QuestionRepository;
 import dev.miguelhiguera.chantasy.services.predictions.AnswerService;
-import dev.miguelhiguera.chantasy.services.predictions.QuestionService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
