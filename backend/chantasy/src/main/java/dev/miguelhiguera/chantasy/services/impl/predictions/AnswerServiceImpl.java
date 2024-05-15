@@ -15,19 +15,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class AnswerServiceImpl implements AnswerService {
 
-    private final QuestionService questionService;
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
     private final QuestionRepository questionRepository;
 
-    public AnswerServiceImpl(QuestionService questionService, AnswerRepository answerRepository, UserRepository userRepository, QuestionRepository questionRepository) {
-        this.questionService = questionService;
+    public AnswerServiceImpl(AnswerRepository answerRepository, UserRepository userRepository, QuestionRepository questionRepository) {
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
         this.questionRepository = questionRepository;
