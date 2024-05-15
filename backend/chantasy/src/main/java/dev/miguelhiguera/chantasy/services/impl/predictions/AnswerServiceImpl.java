@@ -7,10 +7,12 @@ import dev.miguelhiguera.chantasy.entities.predictions.Answer;
 import dev.miguelhiguera.chantasy.entities.predictions.Question;
 import dev.miguelhiguera.chantasy.repositories.UserRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.AnswerRepository;
+import dev.miguelhiguera.chantasy.repositories.predictions.QuestionRepository;
 import dev.miguelhiguera.chantasy.services.predictions.AnswerService;
 import dev.miguelhiguera.chantasy.services.predictions.QuestionService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,11 +24,13 @@ public class AnswerServiceImpl implements AnswerService {
     private final QuestionService questionService;
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
+    private final QuestionRepository questionRepository;
 
-    public AnswerServiceImpl(QuestionService questionService, AnswerRepository answerRepository, UserRepository userRepository) {
+    public AnswerServiceImpl(QuestionService questionService, AnswerRepository answerRepository, UserRepository userRepository, QuestionRepository questionRepository) {
         this.questionService = questionService;
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
+        this.questionRepository = questionRepository;
     }
 
 
@@ -35,27 +39,32 @@ public class AnswerServiceImpl implements AnswerService {
         return answerRepository.findAllByQuestionId(questionId);
     }
 
+    @Transactional
     @Override
     public void submitAnswers(AnswersListDto input, Long raceId, Long userId) throws EntityNotFoundException {
-        for (AnswerDto answer : input.getAnswers()) {
-            Optional<Question> questionOptional = questionService.getQuestion(answer.getQuestionId());
-            if (questionOptional.isEmpty()) {
-                throw new EntityNotFoundException("Question not found");
-            }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-            if (!Objects.equals(questionOptional.get().getRace().getId(), raceId)) {
-                throw new EntityNotFoundException("Question does not belong to specified race.");
-            }
+        List<Question> questions = questionRepository.findAllByRaceId(raceId);
 
-            User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        if (questions.isEmpty()) {
+            throw new EntityNotFoundException("No questions found for the race");
+        }
+
+        answerRepository.deleteByUserIdAndQuestionIn(userId, questions);
+
+        for (AnswerDto answerDto : input.getAnswers()) {
+            Question question = questions.stream()
+                    .filter(q -> q.getId().equals(answerDto.getQuestionId()))
+                    .findFirst()
+                    .orElseThrow(() -> new EntityNotFoundException("Question not found"));
 
             Answer answerEntity = new Answer();
-            answerEntity.setQuestion(questionOptional.get());
-            answerEntity.setAnswer(answer.getAnswer());
+            answerEntity.setQuestion(question);
+            answerEntity.setAnswer(answerDto.getAnswer());
             answerEntity.setUser(user);
 
             answerRepository.save(answerEntity);
-            questionOptional.get().getAnswers().add(answerEntity);
         }
     }
 }
