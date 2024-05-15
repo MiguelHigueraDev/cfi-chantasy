@@ -1,5 +1,7 @@
 package dev.miguelhiguera.chantasy.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.miguelhiguera.chantasy.entities.predictions.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Table(name = "races")
@@ -61,4 +64,29 @@ public class Race {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    /**
+     * All the questions that the users can answer.
+     */
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "race")
+    private Set<Question> questions;
+
+    /**
+     * All the free predictions that users have made.
+     */
+
+    @OneToMany(mappedBy = "race")
+    private Set<FreePrediction> freePredictions;
+
+    /**
+     * All the DNF predictions
+     */
+
+    @OneToMany(mappedBy = "race")
+    private Set<Dnf> dnfs;
+
+    @OneToMany(mappedBy = "race", cascade = CascadeType.ALL)
+    private Set <DnfPrediction> dnfPredictions;
 }

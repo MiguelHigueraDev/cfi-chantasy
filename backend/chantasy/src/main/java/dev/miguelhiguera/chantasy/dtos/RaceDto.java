@@ -1,11 +1,14 @@
 package dev.miguelhiguera.chantasy.dtos;
 
+import dev.miguelhiguera.chantasy.dtos.predictions.QuestionDto;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -26,7 +29,6 @@ public class RaceDto {
     private Short maxDnfAwarded;
 
     // TODO: Check if ranges are valid
-
     @NotNull(message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente no puede estar vacío.")
     @Min(value = 1, message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente debe ser mayor a 0.")
     @Max(value = 20, message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente debe ser menor a 21.")
@@ -60,4 +62,6 @@ public class RaceDto {
 
     @NotNull(message = "El tipo de carrera no puede estar vacío.")
     private boolean isQualifier;
+
+    private List<QuestionDto> questions;
 }
