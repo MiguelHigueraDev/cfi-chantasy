@@ -1,5 +1,6 @@
 package dev.miguelhiguera.chantasy.dtos;
 
+import dev.miguelhiguera.chantasy.annotations.ValidDateRange;
 import dev.miguelhiguera.chantasy.annotations.ValidPositionRange;
 import dev.miguelhiguera.chantasy.dtos.predictions.QuestionDto;
 import jakarta.validation.constraints.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ValidPositionRange
+@ValidDateRange
 public class RaceDto {
 
     @NotBlank(message = "El nombre de la carrera no puede estar vacío.")
@@ -53,7 +55,6 @@ public class RaceDto {
     @NotBlank(message = "La fecha de inicio de la predicción no puede estar vacía.")
     private String predictionStartDate;
 
-    @Future(message = "La fecha de fin de la predicción debe ser en el futuro.")
     @NotBlank(message = "La fecha de fin de la predicción no puede estar vacía.")
     private String predictionEndDate;
 
