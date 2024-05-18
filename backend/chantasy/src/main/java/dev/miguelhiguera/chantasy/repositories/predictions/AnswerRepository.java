@@ -1,6 +1,5 @@
 package dev.miguelhiguera.chantasy.repositories.predictions;
 
-import dev.miguelhiguera.chantasy.entities.User;
 import dev.miguelhiguera.chantasy.entities.predictions.Answer;
 import dev.miguelhiguera.chantasy.entities.predictions.Question;
 import org.springframework.data.jpa.repository.Modifying;

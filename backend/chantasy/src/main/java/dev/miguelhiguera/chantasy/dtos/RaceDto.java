@@ -3,6 +3,7 @@ package dev.miguelhiguera.chantasy.dtos;
 import dev.miguelhiguera.chantasy.annotations.ValidDateRange;
 import dev.miguelhiguera.chantasy.annotations.ValidPositionRange;
 import dev.miguelhiguera.chantasy.dtos.predictions.QuestionDto;
+import dev.miguelhiguera.chantasy.dtos.predictions.ResultDto;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -70,4 +71,6 @@ public class RaceDto {
 
     @NotNull(message = "Los IDs de los pilotos no pueden estar vacíos.")
     private List<Long> driverIds;
+
+    private List<ResultDto> results;
 }

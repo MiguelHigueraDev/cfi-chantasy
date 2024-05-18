@@ -2,13 +2,15 @@ package dev.miguelhiguera.chantasy.services.impl;
 
 import dev.miguelhiguera.chantasy.dtos.RaceDto;
 import dev.miguelhiguera.chantasy.dtos.predictions.QuestionDto;
+import dev.miguelhiguera.chantasy.dtos.predictions.ResultDto;
 import dev.miguelhiguera.chantasy.entities.Circuit;
+import dev.miguelhiguera.chantasy.entities.Driver;
 import dev.miguelhiguera.chantasy.entities.Race;
-import dev.miguelhiguera.chantasy.entities.predictions.Dnf;
 import dev.miguelhiguera.chantasy.entities.predictions.Question;
+import dev.miguelhiguera.chantasy.entities.predictions.Result;
 import dev.miguelhiguera.chantasy.repositories.CircuitRepository;
+import dev.miguelhiguera.chantasy.repositories.DriverRepository;
 import dev.miguelhiguera.chantasy.repositories.RaceRepository;
-import dev.miguelhiguera.chantasy.repositories.predictions.DnfRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.QuestionRepository;
 import dev.miguelhiguera.chantasy.services.RaceService;
 import jakarta.persistence.EntityExistsException;
@@ -25,13 +27,13 @@ public class RaceServiceImpl implements RaceService {
     private final RaceRepository raceRepository;
     private final CircuitRepository circuitRepository;
     private final QuestionRepository questionRepository;
-    private final DnfRepository dnfRepository;
+    private final DriverRepository driverRepository;
 
-    public RaceServiceImpl(RaceRepository raceRepository, CircuitRepository circuitRepository, QuestionRepository questionRepository, DnfRepository dnfRepository) {
+    public RaceServiceImpl(RaceRepository raceRepository, CircuitRepository circuitRepository, QuestionRepository questionRepository, DriverRepository driverRepository) {
         this.raceRepository = raceRepository;
         this.circuitRepository = circuitRepository;
         this.questionRepository = questionRepository;
-        this.dnfRepository = dnfRepository;
+        this.driverRepository = driverRepository;
     }
 
 
@@ -73,10 +75,15 @@ public class RaceServiceImpl implements RaceService {
                 .predictionEndDate(dateStringToLocalDateTime(input.getPredictionEndDate()))
                 .maxFreePredictions(input.getMaxFreePredictions())
                 .isQualifier(input.isQualifier())
-                .questions(new HashSet<>()).build();
+                .questions(new HashSet<>())
+                .drivers(new HashSet<>()).build();
 
         if (input.getQuestions().isEmpty()) {
             throw new IllegalArgumentException("Questions cannot be empty.");
+        }
+
+        if (input.getDriverIds().isEmpty()) {
+            throw new IllegalArgumentException("Drivers cannot be empty.");
         }
 
         raceRepository.save(race);
@@ -89,6 +96,9 @@ public class RaceServiceImpl implements RaceService {
             questionRepository.save(question);
             race.getQuestions().add(question);
         }
+
+        addDrivers(race, input);
+
         return race;
     }
 
@@ -100,6 +110,14 @@ public class RaceServiceImpl implements RaceService {
 
         if (optionalRace.isEmpty() || optionalRace.get().isDeleted()) {
             throw new EntityNotFoundException("Race not found.");
+        }
+
+        if (input.getQuestions().isEmpty()) {
+            throw new IllegalArgumentException("Questions cannot be empty.");
+        }
+
+        if (input.getDriverIds().isEmpty()) {
+            throw new IllegalArgumentException("Drivers cannot be empty.");
         }
 
         Race race = optionalRace.get();
@@ -115,13 +133,7 @@ public class RaceServiceImpl implements RaceService {
         race.setMaxFreePredictions(input.getMaxFreePredictions());
         race.setQualifier(input.isQualifier());
 
-        // Create a new list to store the new questions
         List<Question> newQuestions = new ArrayList<>();
-
-        if (input.getQuestions().isEmpty()) {
-            throw new IllegalArgumentException("Questions cannot be empty.");
-        }
-
         for (QuestionDto dto : input.getQuestions()) {
             Question question = new Question();
             question.setQuestion(dto.getQuestion());
@@ -130,19 +142,18 @@ public class RaceServiceImpl implements RaceService {
             newQuestions.add(question);
         }
 
-        // Clear existing questions from the race entity
         race.getQuestions().clear();
-
-        // Delete existing questions from the database
         questionRepository.deleteAllByRace(race);
-
-        // Save new questions
         for (Question question : newQuestions) {
             questionRepository.save(question);
             race.getQuestions().add(question);
         }
 
-        // Save the updated race entity
+        race.getDrivers().clear();
+        addDrivers(race, input);
+
+        race.getResults().clear();
+
         raceRepository.save(race);
 
         return race;
@@ -162,13 +173,23 @@ public class RaceServiceImpl implements RaceService {
     }
 
     @Override
-    public List<Question> getQuestionsForRace(Long raceId) throws EntityNotFoundException {
-        return questionRepository.findAllByRaceId(raceId);
+    public Race addRaceResults(Race race, List<ResultDto> results) throws EntityNotFoundException {
+
+        for (ResultDto resultDto : results) {
+            Driver driver = driverRepository.findById(resultDto.getDriverId()).orElseThrow(() -> new EntityNotFoundException("Driver not found."));
+            Result result = new Result();
+            result.setRace(race);
+            result.setDriver(driver);
+            result.setPosition(resultDto.getPosition());
+            result.
+        }
+        // TODO: Implement this method
+        return null;
     }
 
     @Override
-    public List<Dnf> getDnfsForRace(Long raceId) throws EntityNotFoundException {
-        return dnfRepository.findAllByRaceId(raceId);
+    public List<Question> getQuestionsForRace(Long raceId) throws EntityNotFoundException {
+        return questionRepository.findAllByRaceId(raceId);
     }
 
     private Circuit getCircuit(Long circuitId) throws EntityNotFoundException {
@@ -179,5 +200,16 @@ public class RaceServiceImpl implements RaceService {
         }
 
         return optionalCircuit.get();
+    }
+
+    private void addDrivers(Race race, RaceDto input) {
+        for (Long driverId: input.getDriverIds()) {
+            Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new EntityNotFoundException("Driver not found."));
+            race.getDrivers().add(driver);
+        }
+    }
+
+    private void clearRaceData(Race race) {
+
     }
 }

@@ -1,14 +1,13 @@
 package dev.miguelhiguera.chantasy.services;
 
 import dev.miguelhiguera.chantasy.dtos.RaceDto;
+import dev.miguelhiguera.chantasy.dtos.predictions.ResultDto;
 import dev.miguelhiguera.chantasy.entities.Race;
-import dev.miguelhiguera.chantasy.entities.predictions.Dnf;
 import dev.miguelhiguera.chantasy.entities.predictions.Question;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface RaceService {
@@ -22,7 +21,7 @@ public interface RaceService {
 
     void deleteRace(Long id) throws EntityNotFoundException;
 
-    List<Question> getQuestionsForRace(Long raceId) throws EntityNotFoundException;
+    Race addRaceResults(Long raceId, List<ResultDto> results) throws EntityNotFoundException;
 
-    List<Dnf> getDnfsForRace(Long raceId) throws EntityNotFoundException;
+    List<Question> getQuestionsForRace(Long raceId) throws EntityNotFoundException;
 }
