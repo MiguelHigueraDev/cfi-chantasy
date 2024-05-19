@@ -21,7 +21,7 @@ public interface RaceService {
 
     void deleteRace(Long id) throws EntityNotFoundException;
 
-    Race addRaceResults(Long raceId, List<ResultDto> results) throws EntityNotFoundException;
+    void addRaceResults(Long id, List<ResultDto> results) throws EntityNotFoundException;
 
     List<Question> getQuestionsForRace(Long raceId) throws EntityNotFoundException;
 }

@@ -79,10 +79,9 @@ public class Race {
 
     @OneToMany(mappedBy = "race")
     private Set<FreePrediction> freePredictions;
-    
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set <Driver> drivers;
+    private Set<Driver> drivers;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Result> results;

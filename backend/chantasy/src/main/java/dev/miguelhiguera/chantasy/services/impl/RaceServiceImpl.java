@@ -12,6 +12,7 @@ import dev.miguelhiguera.chantasy.repositories.CircuitRepository;
 import dev.miguelhiguera.chantasy.repositories.DriverRepository;
 import dev.miguelhiguera.chantasy.repositories.RaceRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.QuestionRepository;
+import dev.miguelhiguera.chantasy.repositories.predictions.ResultRepository;
 import dev.miguelhiguera.chantasy.services.RaceService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,12 +29,14 @@ public class RaceServiceImpl implements RaceService {
     private final CircuitRepository circuitRepository;
     private final QuestionRepository questionRepository;
     private final DriverRepository driverRepository;
+    private final ResultRepository resultRepository;
 
-    public RaceServiceImpl(RaceRepository raceRepository, CircuitRepository circuitRepository, QuestionRepository questionRepository, DriverRepository driverRepository) {
+    public RaceServiceImpl(RaceRepository raceRepository, CircuitRepository circuitRepository, QuestionRepository questionRepository, DriverRepository driverRepository, ResultRepository resultRepository) {
         this.raceRepository = raceRepository;
         this.circuitRepository = circuitRepository;
         this.questionRepository = questionRepository;
         this.driverRepository = driverRepository;
+        this.resultRepository = resultRepository;
     }
 
 
@@ -172,19 +175,21 @@ public class RaceServiceImpl implements RaceService {
         raceRepository.save(race);
     }
 
+    @Transactional
     @Override
-    public Race addRaceResults(Race race, List<ResultDto> results) throws EntityNotFoundException {
-
+    public void addRaceResults(Long raceId, List<ResultDto> results) throws EntityNotFoundException {
+        Race race = raceRepository.findById(raceId).orElseThrow(() -> new EntityNotFoundException("Race not found."));
+        resultRepository.deleteAllByRaceId(race.getId());
         for (ResultDto resultDto : results) {
             Driver driver = driverRepository.findById(resultDto.getDriverId()).orElseThrow(() -> new EntityNotFoundException("Driver not found."));
             Result result = new Result();
             result.setRace(race);
             result.setDriver(driver);
             result.setPosition(resultDto.getPosition());
-            result.
+            result.setDidFinish(resultDto.getDidFinish());
+            resultRepository.save(result);
+            race.getResults().add(result);
         }
-        // TODO: Implement this method
-        return null;
     }
 
     @Override

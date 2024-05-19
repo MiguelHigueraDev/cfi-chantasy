@@ -1,6 +1,7 @@
 package dev.miguelhiguera.chantasy.controllers;
 
 import dev.miguelhiguera.chantasy.dtos.RaceDto;
+import dev.miguelhiguera.chantasy.dtos.predictions.ResultDto;
 import dev.miguelhiguera.chantasy.entities.Race;
 import dev.miguelhiguera.chantasy.services.RaceService;
 import jakarta.validation.Valid;
@@ -43,9 +44,14 @@ public class RaceController {
 
     @PostMapping("/")
     public ResponseEntity<Race> createRace(@Valid @RequestBody RaceDto input) {
-        // Validate ranges and dates
         validateInput(input);
         return ResponseEntity.ok(raceService.createRace(input));
+    }
+
+    @PutMapping("/{id}/results")
+    public ResponseEntity<Void> addRaceResults(@PathVariable Long id, @Valid @RequestBody List<ResultDto> results) {
+        raceService.addRaceResults(id, results);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
