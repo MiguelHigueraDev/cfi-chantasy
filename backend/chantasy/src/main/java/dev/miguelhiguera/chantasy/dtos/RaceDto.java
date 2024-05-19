@@ -1,6 +1,9 @@
 package dev.miguelhiguera.chantasy.dtos;
 
+import dev.miguelhiguera.chantasy.annotations.ValidDateRange;
+import dev.miguelhiguera.chantasy.annotations.ValidPositionRange;
 import dev.miguelhiguera.chantasy.dtos.predictions.QuestionDto;
+import dev.miguelhiguera.chantasy.dtos.predictions.ResultDto;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +17,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ValidPositionRange
+@ValidDateRange
 public class RaceDto {
 
     @NotBlank(message = "El nombre de la carrera no puede estar vacío.")
@@ -28,7 +33,6 @@ public class RaceDto {
     @Max(value = 20, message = "El número máximo de DNF otorgado debe ser menor a 21.")
     private Short maxDnfAwarded;
 
-    // TODO: Check if ranges are valid
     @NotNull(message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente no puede estar vacío.")
     @Min(value = 1, message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente debe ser mayor a 0.")
     @Max(value = 20, message = "El inicio del rango de posiciones que otorgan puntos si se predicen correctamente debe ser menor a 21.")
@@ -49,7 +53,6 @@ public class RaceDto {
     @Max(value = 10, message = "Los puntos otorgados por posición deben ser menores a 10.")
     private Short positionPoints;
 
-    // TODO: Improve date validation later
     @NotBlank(message = "La fecha de inicio de la predicción no puede estar vacía.")
     private String predictionStartDate;
 
@@ -63,5 +66,11 @@ public class RaceDto {
     @NotNull(message = "El tipo de carrera no puede estar vacío.")
     private boolean isQualifier;
 
+    @NotNull(message = "Las preguntas de la carrera no pueden estar vacías.")
     private List<QuestionDto> questions;
+
+    @NotNull(message = "Los IDs de los pilotos no pueden estar vacíos.")
+    private List<Long> driverIds;
+
+    private List<ResultDto> results;
 }

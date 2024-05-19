@@ -1,5 +1,7 @@
 package dev.miguelhiguera.chantasy.entities.predictions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.miguelhiguera.chantasy.entities.Driver;
 import dev.miguelhiguera.chantasy.entities.Race;
 import jakarta.persistence.*;
@@ -20,6 +22,7 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "race_id", referencedColumnName = "id", nullable = false)
     private Race race;
@@ -31,4 +34,6 @@ public class Result {
     @Column(nullable = false)
     private Short position;
 
+    @Column(nullable = false)
+    private Boolean didFinish;
 }

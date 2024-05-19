@@ -80,13 +80,9 @@ public class Race {
     @OneToMany(mappedBy = "race")
     private Set<FreePrediction> freePredictions;
 
-    /**
-     * All the DNF predictions
-     */
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Driver> drivers;
 
-    @OneToMany(mappedBy = "race")
-    private Set<Dnf> dnfs;
-
-    @OneToMany(mappedBy = "race", cascade = CascadeType.ALL)
-    private Set <DnfPrediction> dnfPredictions;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Result> results;
 }
