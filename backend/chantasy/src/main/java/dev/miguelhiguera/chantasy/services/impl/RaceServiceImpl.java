@@ -64,6 +64,15 @@ public class RaceServiceImpl implements RaceService {
 
     @Override
     public Race createRace(RaceDto input) throws EntityExistsException, EntityNotFoundException {
+
+        if (input.getQuestions().isEmpty()) {
+            throw new IllegalArgumentException("Questions cannot be empty.");
+        }
+
+        if (input.getDriverIds().isEmpty()) {
+            throw new IllegalArgumentException("Drivers cannot be empty.");
+        }
+
         Circuit circuit = getCircuit(input.getCircuitId());
 
         Race race = Race.builder()
@@ -81,14 +90,6 @@ public class RaceServiceImpl implements RaceService {
                 .questions(new HashSet<>())
                 .drivers(new HashSet<>()).build();
 
-        if (input.getQuestions().isEmpty()) {
-            throw new IllegalArgumentException("Questions cannot be empty.");
-        }
-
-        if (input.getDriverIds().isEmpty()) {
-            throw new IllegalArgumentException("Drivers cannot be empty.");
-        }
-
         raceRepository.save(race);
 
         for (QuestionDto dto : input.getQuestions()) {
@@ -101,6 +102,7 @@ public class RaceServiceImpl implements RaceService {
         }
 
         addDrivers(race, input);
+        raceRepository.save(race);
 
         return race;
     }
