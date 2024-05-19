@@ -180,17 +180,52 @@ public class RaceServiceImpl implements RaceService {
     @Transactional
     @Override
     public void addRaceResults(Long raceId, List<ResultDto> results) throws EntityNotFoundException {
-        Race race = raceRepository.findById(raceId).orElseThrow(() -> new EntityNotFoundException("Race not found."));
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException("Results list cannot be empty.");
+        }
+
+        Race race = raceRepository.findById(raceId)
+                .orElseThrow(() -> new EntityNotFoundException("Race not found."));
         resultRepository.deleteAllByRaceId(race.getId());
+
+        // Keep track of processed drivers and positions to check for duplicates
+        Set<Long> processedDrivers = new HashSet<>();
+        Set<Short> processedPositions = new HashSet<>();
+        int numResults = results.size();
+
         for (ResultDto resultDto : results) {
-            Driver driver = driverRepository.findById(resultDto.getDriverId()).orElseThrow(() -> new EntityNotFoundException("Driver not found."));
+            // Check for duplicate driver
+            if (!processedDrivers.add(resultDto.getDriverId())) {
+                throw new IllegalArgumentException("Duplicate driver entry for driver ID: " + resultDto.getDriverId());
+            }
+
+            // Check for valid and unique position
+            short position = resultDto.getPosition();
+            if (position < 1 || position > numResults) {
+                throw new IllegalArgumentException("Invalid position " + position + ". Position must be between 1 and " + numResults);
+            }
+            if (!processedPositions.add(position)) {
+                throw new IllegalArgumentException("Duplicate position entry for position: " + position);
+            }
+
+            Driver driver = driverRepository.findById(resultDto.getDriverId())
+                    .orElseThrow(() -> new EntityNotFoundException("Driver not found."));
+
             Result result = new Result();
             result.setRace(race);
             result.setDriver(driver);
-            result.setPosition(resultDto.getPosition());
+            result.setPosition(position);
             result.setDidFinish(resultDto.getDidFinish());
+
             resultRepository.save(result);
             race.getResults().add(result);
+        }
+
+        // Ensure all positions from 1 to numResults are used
+        for (short i = 1; i <= numResults; i++) {
+            if (!processedPositions.contains(i)) {
+                throw new IllegalArgumentException("Missing position " + i + ". All positions from 1 to " + numResults + " must be included.");
+            }
         }
     }
 
