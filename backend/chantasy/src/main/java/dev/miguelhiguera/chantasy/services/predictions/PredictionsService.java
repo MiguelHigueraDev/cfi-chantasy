@@ -7,5 +7,4 @@ import jakarta.persistence.EntityNotFoundException;
 
 public interface PredictionsService {
     void submitPrediction(PredictionsDto predictionsDto, Long raceId, User user) throws EntityNotFoundException;
-    void updatePrediction(PredictionsDto predictionsDto, Long raceId, User user) throws EntityNotFoundException;
 }

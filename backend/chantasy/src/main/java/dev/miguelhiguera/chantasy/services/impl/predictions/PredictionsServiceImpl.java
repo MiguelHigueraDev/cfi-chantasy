@@ -7,20 +7,23 @@ import dev.miguelhiguera.chantasy.dtos.predictions.ResultDto;
 import dev.miguelhiguera.chantasy.entities.Driver;
 import dev.miguelhiguera.chantasy.entities.Race;
 import dev.miguelhiguera.chantasy.entities.User;
-import dev.miguelhiguera.chantasy.entities.predictions.Answer;
-import dev.miguelhiguera.chantasy.entities.predictions.Result;
-import dev.miguelhiguera.chantasy.entities.predictions.ResultPrediction;
+import dev.miguelhiguera.chantasy.entities.predictions.*;
 import dev.miguelhiguera.chantasy.repositories.DriverRepository;
 import dev.miguelhiguera.chantasy.repositories.RaceRepository;
+import dev.miguelhiguera.chantasy.repositories.predictions.AnswerRepository;
+import dev.miguelhiguera.chantasy.repositories.predictions.FreePredictionRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.ResultPredictionRepository;
 import dev.miguelhiguera.chantasy.services.predictions.PredictionsService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PredictionsServiceImpl implements PredictionsService {
@@ -28,15 +31,19 @@ public class PredictionsServiceImpl implements PredictionsService {
     private final RaceRepository raceRepository;
     private final DriverRepository driverRepository;
     private final ResultPredictionRepository resultPredictionRepository;
+    private final AnswerRepository answerRepository;
+    private final FreePredictionRepository freePredictionRepository;
 
-    public PredictionsServiceImpl(RaceRepository raceRepository, DriverRepository driverRepository
-            , ResultPredictionRepository resultPredictionRepository) {
+    public PredictionsServiceImpl(RaceRepository raceRepository, DriverRepository driverRepository,
+                                  ResultPredictionRepository resultPredictionRepository, AnswerRepository answerRepository, FreePredictionRepository freePredictionRepository) {
         this.raceRepository = raceRepository;
         this.driverRepository = driverRepository;
         this.resultPredictionRepository = resultPredictionRepository;
-
+        this.answerRepository = answerRepository;
+        this.freePredictionRepository = freePredictionRepository;
     }
 
+    @Transactional
     @Override
     public void submitPrediction(PredictionsDto predictionsDto, Long raceId, User user) throws EntityNotFoundException {
         List<ResultDto> results = predictionsDto.getResults();
@@ -46,13 +53,17 @@ public class PredictionsServiceImpl implements PredictionsService {
         Race race = raceRepository.findById(predictionsDto.getRaceId())
                 .orElseThrow(() -> new EntityNotFoundException("Carrera no encontrada"));
 
+        if (race.getPredictionEndDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("No se pueden hacer predicciones para una carrera que ya ha empezado");
+        }
+
+        if (race.getPredictionStartDate().isAfter(LocalDateTime.now())) {
+            throw new IllegalArgumentException("No se pueden hacer predicciones para una carrera que aún no ha empezado");
+        }
+
         createResults(results, race, user);
-
-    }
-
-    @Override
-    public void updatePrediction(PredictionsDto predictionsDto, Long raceId, User user) throws EntityNotFoundException {
-
+        createAnswers(answers, race, user);
+        createFreePredictions(freePredictions, race, user);
     }
 
     private void createResults(List<ResultDto> results, Race race, User user) {
@@ -92,6 +103,47 @@ public class PredictionsServiceImpl implements PredictionsService {
     }
 
     private void createAnswers(List<AnswerDto> answers, Race race, User user) {
+        Set<Question> questions = race.getQuestions();
 
+        if (questions.size() != answers.size()) {
+            throw new IllegalArgumentException("El número de respuestas no coincide con el número de preguntas");
+        }
+
+        // Convert for fast lookup
+        Map<Long, Question> questionMap = questions.stream()
+                .collect(Collectors.toMap(Question::getId, question -> question));
+
+        for (AnswerDto answerDto: answers) {
+            Question question = questionMap.get(answerDto.getQuestionId());
+
+            if (question == null) {
+                throw new IllegalArgumentException("ID de pregunta inválido en respuesta: " + answerDto.getQuestionId());
+            }
+
+            Answer answer = new Answer();
+            answer.setQuestion(question);
+            answer.setUser(user);
+            answer.setAnswer(answerDto.getAnswer());
+
+            answerRepository.save(answer);
+        }
+    }
+
+    private void createFreePredictions(List<FreePredictionDto> freePredictions, Race race, User user) {
+        if (freePredictions.size() > race.getMaxFreePredictions()) {
+            throw new IllegalArgumentException("El número de predicciones libres supera el máximo permitido");
+        }
+
+        for (FreePredictionDto freePredictionDto: freePredictions) {
+            FreePrediction freePrediction = new FreePrediction();
+            freePrediction.setPrediction(freePredictionDto.getPrediction());
+            freePrediction.setRace(race);
+            freePrediction.setUser(user);
+
+            freePredictionRepository.save(freePrediction);
+        }
+    }
+
+    private void clearPredictions(Race race, User user) {
     }
 }
