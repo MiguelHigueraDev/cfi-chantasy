@@ -32,6 +32,9 @@ public class ResultPrediction {
     @Column(nullable = false)
     private Short position;
 
+    @Column(nullable = false)
+    private Boolean didFinish;
+
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
