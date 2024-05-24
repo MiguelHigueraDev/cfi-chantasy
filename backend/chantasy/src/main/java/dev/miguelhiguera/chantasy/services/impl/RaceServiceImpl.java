@@ -268,9 +268,6 @@ public class RaceServiceImpl implements RaceService {
 
     private void validateDates(LocalDateTime startDate, LocalDateTime endDate) {
         LocalDateTime now = LocalDateTime.now();
-        if (startDate.isBefore(now)) {
-            throw new IllegalArgumentException("Prediction start date must be in the future.");
-        }
 
         if (endDate.isBefore(now)) {
             throw new IllegalArgumentException("Prediction end date must be in the future.");
