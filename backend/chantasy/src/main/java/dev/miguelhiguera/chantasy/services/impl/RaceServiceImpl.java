@@ -19,6 +19,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static dev.miguelhiguera.chantasy.utils.DateTimeUtils.dateStringToLocalDateTime;
@@ -49,6 +50,12 @@ public class RaceServiceImpl implements RaceService {
         }
 
         return optionalRace;
+    }
+
+    @Override
+    public Optional<Race> getNextRace() throws EntityNotFoundException {
+        LocalDateTime now = LocalDateTime.now();
+        return raceRepository.findFirstByPredictionEndDateGreaterThanOrderByPredictionEndDateAsc(now);
     }
 
     @Override

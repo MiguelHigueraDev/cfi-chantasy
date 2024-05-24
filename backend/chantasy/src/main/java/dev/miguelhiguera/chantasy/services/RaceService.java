@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface RaceService {
     Optional<Race> getRace(Long id) throws EntityNotFoundException;
 
+    Optional<Race> getNextRace() throws EntityNotFoundException;
+
     List<Race> allRaces();
 
     Race createRace(RaceDto input) throws EntityExistsException, EntityNotFoundException;
