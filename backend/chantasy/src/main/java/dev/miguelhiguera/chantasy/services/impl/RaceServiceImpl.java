@@ -80,6 +80,10 @@ public class RaceServiceImpl implements RaceService {
             throw new IllegalArgumentException("Drivers cannot be empty.");
         }
 
+        LocalDateTime startDate = dateStringToLocalDateTime(input.getPredictionStartDate());
+        LocalDateTime endDate = dateStringToLocalDateTime(input.getPredictionEndDate());
+        validateDates(startDate, endDate);
+
         Circuit circuit = getCircuit(input.getCircuitId());
 
         Race race = Race.builder()
@@ -90,8 +94,8 @@ public class RaceServiceImpl implements RaceService {
                 .positionPredictionRangeEnd(input.getPositionPredictionRangeEnd())
                 .dnfPoints(input.getDnfPoints())
                 .positionPoints(input.getPositionPoints())
-                .predictionStartDate(dateStringToLocalDateTime(input.getPredictionStartDate()))
-                .predictionEndDate(dateStringToLocalDateTime(input.getPredictionEndDate()))
+                .predictionStartDate(startDate)
+                .predictionEndDate(endDate)
                 .maxFreePredictions(input.getMaxFreePredictions())
                 .isQualifier(input.isQualifier())
                 .questions(new HashSet<>())
@@ -132,6 +136,10 @@ public class RaceServiceImpl implements RaceService {
             throw new IllegalArgumentException("Drivers cannot be empty.");
         }
 
+        LocalDateTime startDate = dateStringToLocalDateTime(input.getPredictionStartDate());
+        LocalDateTime endDate = dateStringToLocalDateTime(input.getPredictionEndDate());
+        validateDates(startDate, endDate);
+
         Race race = optionalRace.get();
         race.setName(input.getName());
         race.setCircuit(circuit);
@@ -140,8 +148,8 @@ public class RaceServiceImpl implements RaceService {
         race.setPositionPredictionRangeEnd(input.getPositionPredictionRangeEnd());
         race.setDnfPoints(input.getDnfPoints());
         race.setPositionPoints(input.getPositionPoints());
-        race.setPredictionStartDate(dateStringToLocalDateTime(input.getPredictionStartDate()));
-        race.setPredictionEndDate(dateStringToLocalDateTime(input.getPredictionEndDate()));
+        race.setPredictionStartDate(startDate);
+        race.setPredictionEndDate(endDate);
         race.setMaxFreePredictions(input.getMaxFreePredictions());
         race.setQualifier(input.isQualifier());
 
@@ -258,7 +266,19 @@ public class RaceServiceImpl implements RaceService {
         }
     }
 
-    private void clearRaceData(Race race) {
+    private void validateDates(LocalDateTime startDate, LocalDateTime endDate) {
+        LocalDateTime now = LocalDateTime.now();
+        if (startDate.isBefore(now)) {
+            throw new IllegalArgumentException("Prediction start date must be in the future.");
+        }
 
+        if (endDate.isBefore(now)) {
+            throw new IllegalArgumentException("Prediction end date must be in the future.");
+        }
+
+        if (endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("Prediction end date must be after start date.");
+        }
     }
+
 }
