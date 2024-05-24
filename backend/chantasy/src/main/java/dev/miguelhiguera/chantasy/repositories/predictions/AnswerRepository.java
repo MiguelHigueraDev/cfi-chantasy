@@ -14,4 +14,5 @@ public interface AnswerRepository extends CrudRepository<Answer, Long>{
     @Modifying
     @Query("DELETE FROM Answer a WHERE a.user.id = :userId AND a.question IN :questions")
     void deleteByUserIdAndQuestionIn(Long userId, List<Question> questions);
+
 }

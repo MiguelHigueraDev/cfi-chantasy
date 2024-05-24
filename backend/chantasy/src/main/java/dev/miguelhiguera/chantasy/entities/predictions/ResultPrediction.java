@@ -1,5 +1,6 @@
 package dev.miguelhiguera.chantasy.entities.predictions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.miguelhiguera.chantasy.entities.Driver;
 import dev.miguelhiguera.chantasy.entities.Race;
 import dev.miguelhiguera.chantasy.entities.User;
@@ -32,7 +33,15 @@ public class ResultPrediction {
     @Column(nullable = false)
     private Short position;
 
+    @Column(nullable = false)
+    private Boolean didFinish;
+
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
+
+    @JsonProperty("userId")
+    public Long getUserId() {
+        return user.getId();
+    }
 }
