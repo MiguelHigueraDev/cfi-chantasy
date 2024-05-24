@@ -12,6 +12,7 @@ import dev.miguelhiguera.chantasy.repositories.DriverRepository;
 import dev.miguelhiguera.chantasy.repositories.RaceRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.AnswerRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.FreePredictionRepository;
+import dev.miguelhiguera.chantasy.repositories.predictions.QuestionRepository;
 import dev.miguelhiguera.chantasy.repositories.predictions.ResultPredictionRepository;
 import dev.miguelhiguera.chantasy.services.predictions.PredictionsService;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,14 +34,16 @@ public class PredictionsServiceImpl implements PredictionsService {
     private final ResultPredictionRepository resultPredictionRepository;
     private final AnswerRepository answerRepository;
     private final FreePredictionRepository freePredictionRepository;
+    private final QuestionRepository questionRepository;
 
     public PredictionsServiceImpl(RaceRepository raceRepository, DriverRepository driverRepository,
-                                  ResultPredictionRepository resultPredictionRepository, AnswerRepository answerRepository, FreePredictionRepository freePredictionRepository) {
+                                  ResultPredictionRepository resultPredictionRepository, AnswerRepository answerRepository, FreePredictionRepository freePredictionRepository, QuestionRepository questionRepository) {
         this.raceRepository = raceRepository;
         this.driverRepository = driverRepository;
         this.resultPredictionRepository = resultPredictionRepository;
         this.answerRepository = answerRepository;
         this.freePredictionRepository = freePredictionRepository;
+        this.questionRepository = questionRepository;
     }
 
     @Transactional
@@ -60,6 +63,9 @@ public class PredictionsServiceImpl implements PredictionsService {
         if (race.getPredictionStartDate().isAfter(LocalDateTime.now())) {
             throw new IllegalArgumentException("No se pueden hacer predicciones para una carrera que aún no ha empezado");
         }
+
+        // Remove all current predictions before adding new ones
+        clearPredictions(race, user);
 
         createResults(results, race, user);
         createAnswers(answers, race, user);
@@ -145,5 +151,11 @@ public class PredictionsServiceImpl implements PredictionsService {
     }
 
     private void clearPredictions(Race race, User user) {
+        freePredictionRepository.deleteByRaceAndUser(race, user);
+        resultPredictionRepository.deleteByRaceAndUser(race, user);
+
+
+        List<Question> questions = questionRepository.findAllByRaceId(race.getId());
+        answerRepository.deleteByUserIdAndQuestionIn(user.getId(), questions);
     }
 }
