@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { WelcomeScreenComponent } from './welcome-screen/welcome-screen.component';
-import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { WelcomeScreenComponent } from './components/welcome-screen/welcome-screen.component';
+import { RegisterComponent } from './components/register/register.component';
 
 export const routes: Routes = [
     { path: '', component: WelcomeScreenComponent, title: 'Chantasy League' },
