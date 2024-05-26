@@ -37,7 +37,6 @@ public class RaceController {
         return ResponseEntity.ok(optionalRace.get());
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
     @GetMapping("/next")
     public ResponseEntity<Race> getNextRace() {
         Optional<Race> optionalRace = raceService.getNextRace();

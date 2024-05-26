@@ -36,7 +36,10 @@ public class SecurityConfiguration {
     private HttpSecurity getHttpSecurity(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        authorize -> authorize.requestMatchers("/auth/**").permitAll().anyRequest().authenticated())
+                        authorize -> authorize
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/api/races/next").permitAll()  // Allow public access to the next race endpoint
+                                .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
