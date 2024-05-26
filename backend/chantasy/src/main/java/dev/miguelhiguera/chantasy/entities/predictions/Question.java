@@ -3,8 +3,7 @@ package dev.miguelhiguera.chantasy.entities.predictions;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.miguelhiguera.chantasy.entities.Race;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -16,6 +15,9 @@ import java.util.Set;
 @Setter
 @Table(name = "questions")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Question {
 
     @Id
