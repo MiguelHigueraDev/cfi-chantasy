@@ -51,6 +51,9 @@ public class Race {
     private Short positionPoints;
 
     @Column(nullable = false)
+    private LocalDateTime date;
+
+    @Column(nullable = false)
     private LocalDateTime predictionStartDate;
 
     @Column(nullable = false)

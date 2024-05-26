@@ -84,12 +84,15 @@ public class RaceServiceImpl implements RaceService {
         LocalDateTime endDate = dateStringToLocalDateTime(input.getPredictionEndDate());
         validateDates(startDate, endDate);
 
+        LocalDateTime date = dateStringToLocalDateTime(input.getDate());
+
         Circuit circuit = getCircuit(input.getCircuitId());
 
         Race race = Race.builder()
                 .name(input.getName())
                 .circuit(circuit)
                 .maxDnfAwarded(input.getMaxDnfAwarded())
+                .date(date)
                 .positionPredictionRangeStart(input.getPositionPredictionRangeStart())
                 .positionPredictionRangeEnd(input.getPositionPredictionRangeEnd())
                 .dnfPoints(input.getDnfPoints())
@@ -140,10 +143,13 @@ public class RaceServiceImpl implements RaceService {
         LocalDateTime endDate = dateStringToLocalDateTime(input.getPredictionEndDate());
         validateDates(startDate, endDate);
 
+        LocalDateTime date = dateStringToLocalDateTime(input.getDate());
+
         Race race = optionalRace.get();
         race.setName(input.getName());
         race.setCircuit(circuit);
         race.setMaxDnfAwarded(input.getMaxDnfAwarded());
+        race.setDate(date);
         race.setPositionPredictionRangeStart(input.getPositionPredictionRangeStart());
         race.setPositionPredictionRangeEnd(input.getPositionPredictionRangeEnd());
         race.setDnfPoints(input.getDnfPoints());

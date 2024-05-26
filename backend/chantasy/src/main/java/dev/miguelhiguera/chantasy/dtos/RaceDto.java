@@ -53,6 +53,9 @@ public class RaceDto {
     @Max(value = 10, message = "Los puntos otorgados por posición deben ser menores a 10.")
     private Short positionPoints;
 
+    @NotBlank(message = "La fecha de la carrera no puede estar vacía.")
+    private String date;
+
     @NotBlank(message = "La fecha de inicio de la predicción no puede estar vacía.")
     private String predictionStartDate;
 
