@@ -13,6 +13,7 @@ export interface Race {
     positionPredictionRangeEnd: number;
     dnfPoints: number;
     positionPoints: number;
+    date: string;
     predictionStartDate: string;
     predictionEndDate: string;
     maxFreePredictions: number;
