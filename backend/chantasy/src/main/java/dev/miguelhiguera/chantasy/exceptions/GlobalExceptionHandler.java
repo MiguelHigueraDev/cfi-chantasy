@@ -37,8 +37,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         EXCEPTION_MAPPINGS.put(BadCredentialsException.class, new ExceptionResponse(HttpStatusCode.valueOf(401), "The username or password is incorrect"));
         EXCEPTION_MAPPINGS.put(AccountStatusException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "The account is locked"));
         EXCEPTION_MAPPINGS.put(AccessDeniedException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "You are not authorized to access this resource"));
-        EXCEPTION_MAPPINGS.put(SignatureException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "The JWT signature is invalid"));
-        EXCEPTION_MAPPINGS.put(ExpiredJwtException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "The JWT token has expired"));
+        EXCEPTION_MAPPINGS.put(SignatureException.class, new ExceptionResponse(HttpStatusCode.valueOf(401), "The JWT signature is invalid"));
+        EXCEPTION_MAPPINGS.put(ExpiredJwtException.class, new ExceptionResponse(HttpStatusCode.valueOf(401), "The JWT token has expired"));
         EXCEPTION_MAPPINGS.put(EntityNotFoundException.class, new ExceptionResponse(HttpStatusCode.valueOf(404), "Resource not found"));
         EXCEPTION_MAPPINGS.put(EntityExistsException.class, new ExceptionResponse(HttpStatusCode.valueOf(409), "Resource already exists"));
         EXCEPTION_MAPPINGS.put(RuntimeException.class, new ExceptionResponse(HttpStatusCode.valueOf(400), "Bad request"));
