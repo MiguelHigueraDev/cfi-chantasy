@@ -3,6 +3,8 @@ package dev.miguelhiguera.chantasy.controllers;
 import dev.miguelhiguera.chantasy.entities.User;
 import dev.miguelhiguera.chantasy.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -36,7 +38,8 @@ public class UserController {
 
     @GetMapping("/")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<List<User>> allUsers() {
-        return ResponseEntity.ok(userService.allUsers());
+    public ResponseEntity<Page<User>> allUsers(Pageable pageable) {
+        Page<User> users = userService.allUsers(pageable);
+        return ResponseEntity.ok(users);
     }
 }

@@ -4,11 +4,12 @@ import dev.miguelhiguera.chantasy.dtos.CircuitDto;
 import dev.miguelhiguera.chantasy.entities.Circuit;
 import dev.miguelhiguera.chantasy.services.CircuitService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
@@ -34,8 +35,9 @@ public class CircuitController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Circuit>> allCircuits() {
-        return ResponseEntity.ok(circuitService.allCircuits());
+    public ResponseEntity<Page<Circuit>> allCircuits(Pageable pageable) {
+        Page<Circuit> circuits = circuitService.allCircuits(pageable);
+        return ResponseEntity.ok(circuits);
     }
 
     @PostMapping("/")

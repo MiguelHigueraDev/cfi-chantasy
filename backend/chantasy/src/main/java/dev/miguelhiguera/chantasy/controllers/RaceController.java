@@ -5,6 +5,8 @@ import dev.miguelhiguera.chantasy.dtos.predictions.ResultDto;
 import dev.miguelhiguera.chantasy.entities.Race;
 import dev.miguelhiguera.chantasy.services.RaceService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +47,9 @@ public class RaceController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @GetMapping("/")
-    public ResponseEntity<List<Race>> allRaces() {
-        return ResponseEntity.ok(raceService.allRaces());
+    public ResponseEntity<Page<Race>> allRaces(Pageable pageable) {
+        Page<Race> races = raceService.allRaces(pageable);
+        return ResponseEntity.ok(races);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
