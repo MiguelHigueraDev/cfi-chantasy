@@ -36,7 +36,7 @@ export class AuthService {
   logout(): void {
     this.clearSession();
     this.isAuthenticated$.next(false);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   getToken(): string | null {
