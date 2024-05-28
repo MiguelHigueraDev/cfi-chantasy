@@ -1,18 +1,20 @@
-<section class="mx-auto w-full flex justify-center">
-    <form class="space-y-4 w-full p-4 max-w-[400px]">
-        <div class="flex flex-col gap-1">
-            <label for="registerCode" class="label">Código de registro</label>
-            <input type="text" class="input" id="registerCode" [(ngModel)]="registerCode" name="registerCode" required>
-        </div>
-        <div class="flex flex-col gap-1">
-            <label for="username" class="label">Nombre de usuario</label>
-            <input type="username" class="input" id="username" [(ngModel)]="username" name="username" required>
-        </div>
-        <div class="flex flex-col gap-1">
-            <label for="password" class="label">Contraseña</label>
-            <input type="password" class="input" id="password" [(ngModel)]="password" name="password" required>
-        </div>
-        <button type="submit" class="btn" (click)="register()">Registrarse</button>
-        <a class="block hover:text-purple-500" routerLink="/login">Si ya tienes cuenta inicia sesión aquí</a>
+<section class="justify-center">
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-4 flex flex-col p-4 w-full mx-auto max-w-[400px]">
+        <mat-form-field class="w-full">
+            <mat-label>Código de registro</mat-label>
+            <input type="text" matInput formControlName="registerCode" required />
+            <mat-hint>Solicita un código en CFI</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+            <mat-label>Nombre de usuario</mat-label>
+            <input type="text" matInput formControlName="username" required />
+            <mat-hint>Lo usarás para entrar al sistema</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+            <mat-label>Contraseña</mat-label>
+            <input type="password" matInput formControlName="password" required />
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="primary">Registrarse</button>
     </form>
+    <a class="block hover:text-blue-500 mt-5 mx-auto max-w-[250px]" routerLink="/login">Si ya tienes cuenta inicia sesión aquí</a>
 </section>
