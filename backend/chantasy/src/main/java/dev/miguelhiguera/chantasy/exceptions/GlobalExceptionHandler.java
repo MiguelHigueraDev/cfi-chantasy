@@ -4,6 +4,8 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AccountStatusException;
@@ -19,7 +21,6 @@ import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -30,61 +31,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         this.error = error;
     }
 
+    private static final Map<Class<? extends Exception>, ExceptionResponse> EXCEPTION_MAPPINGS = new HashMap<>();
+
+    static {
+        EXCEPTION_MAPPINGS.put(BadCredentialsException.class, new ExceptionResponse(HttpStatusCode.valueOf(401), "The username or password is incorrect"));
+        EXCEPTION_MAPPINGS.put(AccountStatusException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "The account is locked"));
+        EXCEPTION_MAPPINGS.put(AccessDeniedException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "You are not authorized to access this resource"));
+        EXCEPTION_MAPPINGS.put(SignatureException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "The JWT signature is invalid"));
+        EXCEPTION_MAPPINGS.put(ExpiredJwtException.class, new ExceptionResponse(HttpStatusCode.valueOf(403), "The JWT token has expired"));
+        EXCEPTION_MAPPINGS.put(EntityNotFoundException.class, new ExceptionResponse(HttpStatusCode.valueOf(404), "Resource not found"));
+        EXCEPTION_MAPPINGS.put(EntityExistsException.class, new ExceptionResponse(HttpStatusCode.valueOf(409), "Resource already exists"));
+        EXCEPTION_MAPPINGS.put(RuntimeException.class, new ExceptionResponse(HttpStatusCode.valueOf(400), "Bad request"));
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleException(Exception exception) {
-        ProblemDetail errorDetail = null;
-
         exception.printStackTrace();
 
-        if (exception instanceof BadCredentialsException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
-            errorDetail.setProperty("description", "The username or password is incorrect");
+        ExceptionResponse response = EXCEPTION_MAPPINGS.getOrDefault(
+                exception.getClass(),
+                new ExceptionResponse(HttpStatusCode.valueOf(500), "Unknown internal server error.")
+        );
 
-            return errorDetail;
-        }
-
-        if (exception instanceof AccountStatusException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The account is locked");
-        }
-
-        if (exception instanceof AccessDeniedException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "You are not authorized to access this resource");
-        }
-
-        if (exception instanceof SignatureException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT signature is invalid");
-        }
-
-        if (exception instanceof ExpiredJwtException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT token has expired");
-        }
-
-        if (exception instanceof RuntimeException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), exception.getMessage());
-            errorDetail.setProperty("description", "Bad request");
-        }
-
-        if (exception instanceof EntityNotFoundException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
-            errorDetail.setProperty("description", "Resource not found");
-        }
-
-        if (exception instanceof EntityExistsException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), exception.getMessage());
-            errorDetail.setProperty("description", "Resource already exists");
-        }
-
-        if (errorDetail == null) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
-            errorDetail.setProperty("description", "Unknown internal server error.");
-        }
-
-        errorDetail.setDetail("");
-
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(response.getStatus(), exception.getMessage());
+        errorDetail.setProperty("description", response.getDescription());
         return errorDetail;
     }
 
@@ -101,5 +71,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         body.put("errors", errors);
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class ExceptionResponse {
+        private final HttpStatusCode status;
+        private final String description;
     }
 }
