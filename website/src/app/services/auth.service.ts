@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { catchError, map, Observable, tap, throwError } from 'rxjs';
 export class AuthService {
   private baseUrl = environment.apiUrl + '/auth';
   private refreshTokenTimeout: any;
+  private isRefreshing = false;
+  private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -39,7 +42,6 @@ export class AuthService {
 
   getRefreshToken(): string | null {
     return localStorage.getItem('refreshToken');
-  
   }
 
   isAuthenticated(): boolean {
@@ -53,23 +55,41 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    return this.http.post<LoginResponse>(`${this.baseUrl}/refresh-token`, { refreshToken }).pipe(
-      tap(response => {
-        if (response && response.token && response.refreshToken) {
-          this.setSession(response);
-        }
-      }),
-      catchError((error: HttpErrorResponse) => {
-        this.logout();
-        return throwError(() => error);
-      })
-    );
+    if (this.isRefreshing) {
+      return this.tokenSubject.pipe(
+        switchMap(token => {
+          if (token) {
+            return this.http.post<LoginResponse>(`${this.baseUrl}/refresh-token`, { refreshToken });
+          }
+          return throwError(() => new Error('Token refresh failed'));
+        })
+      );
+    } else {
+      this.isRefreshing = true;
+      this.tokenSubject.next(null);
+
+      return this.http.post<LoginResponse>(`${this.baseUrl}/refresh-token`, { refreshToken }).pipe(
+        tap(response => {
+          if (response && response.token && response.refreshToken) {
+            this.setSession(response);
+            this.tokenSubject.next(response.token);
+          }
+        }),
+        catchError((error: HttpErrorResponse) => {
+          this.logout();
+          return throwError(() => error);
+        }),
+        tap(() => {
+          this.isRefreshing = false;
+        })
+      );
+    }
   }
 
   private setSession(response: LoginResponse): void {
     localStorage.setItem('token', response.token);
     localStorage.setItem('refreshToken', response.refreshToken);
-    localStorage.setItem('expiresIn', response.expiresIn / 1000 + '')
+    localStorage.setItem('expiresIn', response.expiresIn / 1000 + '');
     this.scheduleTokenRefresh();
   }
 
@@ -89,7 +109,6 @@ export class AuthService {
       this.refreshToken().subscribe();
     }, (expiresIn - 60) * 1000);
   }
-
 }
 
 interface LoginResponse {
@@ -98,7 +117,7 @@ interface LoginResponse {
   refreshToken: string;
 }
 
-interface Credentials {
+export interface Credentials {
   username: string;
   password: string;
 }
