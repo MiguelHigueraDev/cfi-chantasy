@@ -16,6 +16,8 @@ import dev.miguelhiguera.chantasy.repositories.predictions.ResultRepository;
 import dev.miguelhiguera.chantasy.services.RaceService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,14 +61,14 @@ public class RaceServiceImpl implements RaceService {
     }
 
     @Override
-    public List<Race> allRaces() {
-        List<Race> races = new ArrayList<>();
-        raceRepository.findAll().forEach(race -> {
-            if (!race.isDeleted()) {
-                races.add(race);
-            }
-        });
-        return races;
+    public Page<Race> allRaces(Pageable pageable) {
+        return raceRepository.findAll(pageable)
+                .map(race -> {
+                    if (race.isDeleted()) {
+                        return null;
+                    }
+                    return race;
+                });
     }
 
     @Override

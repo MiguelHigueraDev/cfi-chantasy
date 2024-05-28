@@ -4,11 +4,12 @@ import dev.miguelhiguera.chantasy.dtos.DriverDto;
 import dev.miguelhiguera.chantasy.entities.Driver;
 import dev.miguelhiguera.chantasy.services.DriverService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
@@ -34,8 +35,9 @@ public class DriverController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Driver>> allDrivers() {
-        return ResponseEntity.ok(driverService.allDrivers());
+    public ResponseEntity<Page<Driver>> allDrivers(Pageable pageable) {
+        Page<Driver> drivers = driverService.allDrivers(pageable);
+        return ResponseEntity.ok(drivers);
     }
 
     @PostMapping("/")

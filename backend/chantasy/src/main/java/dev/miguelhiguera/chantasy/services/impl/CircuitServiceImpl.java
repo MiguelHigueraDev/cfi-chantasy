@@ -8,10 +8,10 @@ import dev.miguelhiguera.chantasy.repositories.CountryRepository;
 import dev.miguelhiguera.chantasy.services.CircuitService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,14 +37,14 @@ public class CircuitServiceImpl implements CircuitService {
     }
 
     @Override
-    public List<Circuit> allCircuits() {
-        List<Circuit> circuits = new ArrayList<>();
-        circuitRepository.findAll().forEach(circuit -> {
-            if (!circuit.isDeleted()) {
-                circuits.add(circuit);
-            }
-        });
-        return circuits;
+    public Page<Circuit> allCircuits(Pageable pageable) {
+        return circuitRepository.findAll(pageable)
+                .map(circuit -> {
+                    if (circuit.isDeleted()) {
+                        return null;
+                    }
+                    return circuit;
+                });
     }
 
     @Override

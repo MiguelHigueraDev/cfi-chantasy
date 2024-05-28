@@ -6,6 +6,8 @@ import dev.miguelhiguera.chantasy.repositories.CountryRepository;
 import dev.miguelhiguera.chantasy.services.CountryService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,14 +34,14 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public List<Country> allCountries() {
-        List<Country> countries = new ArrayList<>();
-        countryRepository.findAll().forEach(country -> {
-            if (!country.isDeleted()) {
-                countries.add(country);
-            }
-        });
-        return countries;
+    public Page<Country> allCountries(Pageable pageable) {
+        return countryRepository.findAll(pageable)
+                .map(country -> {
+                    if (country.isDeleted()) {
+                        return null;
+                    }
+                    return country;
+                });
     }
 
     @Override

@@ -8,11 +8,11 @@ import dev.miguelhiguera.chantasy.repositories.RoleRepository;
 import dev.miguelhiguera.chantasy.repositories.UserRepository;
 import dev.miguelhiguera.chantasy.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,10 +29,9 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<User> allUsers() {
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
-        return users;
+    @Override
+    public Page<User> allUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override

@@ -10,11 +10,11 @@ import dev.miguelhiguera.chantasy.repositories.TeamRepository;
 import dev.miguelhiguera.chantasy.services.DriverService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,14 +42,14 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<Driver> allDrivers() {
-        List<Driver> drivers = new ArrayList<>();
-        driverRepository.findAll().forEach(driver -> {
-            if (!driver.isDeleted()) {
-                drivers.add(driver);
-            }
-        });
-        return drivers;
+    public Page<Driver> allDrivers(Pageable pageable) {
+        return driverRepository.findAll(pageable)
+                .map(driver -> {
+                    if (driver.isDeleted()) {
+                        return null;
+                    }
+                    return driver;
+                });
     }
 
     @Override

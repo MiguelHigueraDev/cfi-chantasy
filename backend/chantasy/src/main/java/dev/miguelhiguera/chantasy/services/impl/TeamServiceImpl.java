@@ -6,11 +6,11 @@ import dev.miguelhiguera.chantasy.repositories.TeamRepository;
 import dev.miguelhiguera.chantasy.services.TeamService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,14 +34,14 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<Team> allTeams() {
-        List<Team> teams = new ArrayList<>();
-        teamRepository.findAll().forEach(team -> {
-            if (!team.isDeleted()) {
-                teams.add(team);
-            }
-        });
-        return teams;
+    public Page<Team> allTeams(Pageable pageable) {
+        return teamRepository.findAll(pageable)
+                .map(team -> {
+                    if (team.isDeleted()) {
+                        return null;
+                    }
+                    return team;
+                });
     }
 
     @Override

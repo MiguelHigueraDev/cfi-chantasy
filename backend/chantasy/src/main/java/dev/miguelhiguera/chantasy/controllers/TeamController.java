@@ -4,11 +4,12 @@ import dev.miguelhiguera.chantasy.dtos.TeamDto;
 import dev.miguelhiguera.chantasy.entities.Team;
 import dev.miguelhiguera.chantasy.services.TeamService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
@@ -34,8 +35,9 @@ public class TeamController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Team>> allTeams() {
-        return ResponseEntity.ok(teamService.allTeams());
+    public ResponseEntity<Page<Team>> allTeams(Pageable pageable) {
+        Page<Team> teams = teamService.allTeams(pageable);
+        return ResponseEntity.ok(teams);
     }
 
     @PostMapping("/")

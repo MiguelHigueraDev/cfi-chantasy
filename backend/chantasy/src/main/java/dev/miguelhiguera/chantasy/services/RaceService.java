@@ -6,6 +6,8 @@ import dev.miguelhiguera.chantasy.entities.Race;
 import dev.miguelhiguera.chantasy.entities.predictions.Question;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,7 @@ public interface RaceService {
 
     Optional<Race> getNextRace() throws EntityNotFoundException;
 
-    List<Race> allRaces();
+    Page<Race> allRaces(Pageable pageable);
 
     Race createRace(RaceDto input) throws EntityExistsException, EntityNotFoundException;
 
