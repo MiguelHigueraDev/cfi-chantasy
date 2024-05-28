@@ -1,5 +1,6 @@
 <section class="justify-center">
     <form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-4 flex flex-col p-4 w-full mx-auto max-w-[400px]">
+        <h1 class="uppercase text-center">Iniciar sesión en Chantasy</h1>
         <mat-form-field class="w-full">
             <mat-label>Nombre de usuario</mat-label>
             <input type="text" matInput formControlName="username" required />

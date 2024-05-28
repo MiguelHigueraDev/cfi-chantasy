@@ -1,5 +1,6 @@
 <section class="justify-center">
     <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-4 flex flex-col p-4 w-full mx-auto max-w-[400px]">
+        <h1 class="uppercase text-center">Registrarse en Chantasy</h1>
         <mat-form-field class="w-full">
             <mat-label>Código de registro</mat-label>
             <input type="text" matInput formControlName="registerCode" required />
