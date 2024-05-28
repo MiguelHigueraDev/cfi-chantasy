@@ -1,3 +1,26 @@
-<header class="p-4">
-    <a routerLink="/" class="text-blue-500 text-3xl font-bold tracking-wide uppercase">Chantasy League</a>
-</header>
+<mat-toolbar class="w-full">
+  <button
+    mat-icon-button
+    class="example-icon"
+    aria-label="Example icon-button with menu icon"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a routerLink="/">Chantasy League</a>
+  <span class="example-spacer"></span>
+  @if(!isAuthenticated) {
+    <a routerLink="/login" class="hide-on-phone" mat-raised-button color="primary">Iniciar sesión</a>
+  }
+  @else {
+    <button (click)="logout()" class="hide-on-phone" mat-raised-button color="accent">Cerrar sesión</button>
+  }
+</mat-toolbar>
+
+<style>
+  .mat-toolbar {
+    width: 100%;
+  }
+  .example-spacer {
+    flex: 1 1 auto;
+  }
+</style>

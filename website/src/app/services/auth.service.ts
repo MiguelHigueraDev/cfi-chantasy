@@ -13,6 +13,7 @@ export class AuthService {
   private refreshTokenTimeout: any;
   private isRefreshing = false;
   private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  public isAuthenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isAuthenticated());
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -21,6 +22,7 @@ export class AuthService {
       map(response => {
         if (response && response.token && response.refreshToken) {
           this.setSession(response);
+          this.isAuthenticated$.next(true);
         }
         return response;
       })
@@ -33,7 +35,8 @@ export class AuthService {
 
   logout(): void {
     this.clearSession();
-    this.router.navigate(['/login']);
+    this.isAuthenticated$.next(false);
+    this.router.navigate(['/']);
   }
 
   getToken(): string | null {
@@ -73,6 +76,7 @@ export class AuthService {
           if (response && response.token && response.refreshToken) {
             this.setSession(response);
             this.tokenSubject.next(response.token);
+            this.isAuthenticated$.next(true);
           }
         }),
         catchError((error: HttpErrorResponse) => {
