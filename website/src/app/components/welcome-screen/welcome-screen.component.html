@@ -10,5 +10,11 @@
             <p>Próxima carrera: <span class="text-blue-400">No hay carreras próximas</span></p>
         }
     </div>
-    <a routerLink="login" class="block text-xl sm:text-2xl md:text-2xl text-center font-semibold text-blue-400">Inicia sesión para hacer predicciones</a>
+    @if (isAuthenticated) {
+        <a routerLink="/" class="block text-xl sm:text-2xl md:text-2xl text-center font-semibold text-blue-400">Haz tus predicciones</a>
+    }
+    @else {
+        <a routerLink="login" class="block text-xl sm:text-2xl md:text-2xl text-center font-semibold text-blue-400">Inicia sesión para hacer tu predicción</a>
+    }
+    
 </div>
