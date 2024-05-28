@@ -1,9 +1,14 @@
 <div class="p-4 space-y-6">
     <h2 class="text-2xl sm:text-3xl md:text-5xl text-center font-bold">¡Bienvenid&#64; a la Chantasy League!</h2>
     <div class="text-center text-md sm:text-lg">
-        <p>Próxima carrera: <span class="text-purple-400">{{nextRace?.name || 'Nombre desconocido'}}</span> en {{nextRace?.circuit?.name}}</p>
-        <p>Fecha: {{nextRace?.date! | dateFormat}}</p>
-        <p>Cierre de las predicciones: {{nextRace?.predictionEndDate! | dateFormat}}</p>
+        @if(nextRace) {
+            <p>Próxima carrera: <span class="text-purple-400">{{nextRace.name}}</span> en {{nextRace.circuit.name}}</p>
+            <p>Fecha: {{nextRace.date | dateFormat}}</p>
+            <p>Cierre de las predicciones: {{nextRace.predictionEndDate | dateFormat}}</p>
+        }
+        @else {
+            <p>Próxima carrera: <span class="text-purple-400">No hay carreras próximas</span></p>
+        }
     </div>
-    <a routerLink="login" class="block text-xl sm:text-2xl md:text-2xl text-center font-semibold text-purple-400">Haz tus predicciones</a>
+    <a routerLink="login" class="block text-xl sm:text-2xl md:text-2xl text-center font-semibold text-purple-400">Inicia sesión para hacer predicciones</a>
 </div>

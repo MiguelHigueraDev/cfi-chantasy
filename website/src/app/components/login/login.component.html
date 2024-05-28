@@ -1,14 +1,14 @@
-<section class="mx-auto w-full flex justify-center">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4 w-full p-4 max-w-[400px]">
-        <div class="flex flex-col gap-1">
-            <label for="username" class="label">Nombre de usuario</label>
-            <input type="username" class="input" id="username" formControlName="username" name="username" required>
-        </div>
-        <div class="flex flex-col gap-1">
-            <label for="password" class="label">Contraseña</label>
-            <input type="password" class="input" id="password" formControlName="password" name="password" required>
-        </div>
-        <button type="submit" [disabled]="!loginForm.valid" class="btn disabled:btn-disabled">Iniciar sesión</button>
-        <a class="block hover:text-purple-500" routerLink="/register">¿No tienes cuenta? Registrarse aquí</a>
+<section class="justify-center">
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-4 flex flex-col p-4 w-full mx-auto max-w-[400px]">
+        <mat-form-field class="w-full">
+            <mat-label>Nombre de usuario</mat-label>
+            <input type="text" matInput formControlName="username" required />
+        </mat-form-field>
+        <mat-form-field class="w-full">
+            <mat-label>Contraseña</mat-label>
+            <input type="password" matInput formControlName="password" required />
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="primary">Iniciar sesión</button>
     </form>
+    <a class="block hover:text-blue-500 mt-5 mx-auto max-w-[250px]" routerLink="/register">¿No tienes cuenta? Registrarse aquí</a>
 </section>
