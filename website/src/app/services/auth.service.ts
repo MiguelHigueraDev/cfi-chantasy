@@ -4,25 +4,29 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { Profile } from '../interfaces/Profile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = environment.apiUrl + '/auth';
+  private authUrl = environment.baseUrl + '/auth';
+  private userUrl = environment.baseUrl + '/api/users';
   private refreshTokenTimeout: any;
   private isRefreshing = false;
   private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   public isAuthenticated$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isAuthenticated());
+  public userProfile$: BehaviorSubject<Profile | null> = new BehaviorSubject<Profile | null>(null);
 
   constructor(private http: HttpClient, private router: Router) { }
 
   login(credentials: Credentials): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${this.authUrl}/login`, credentials).pipe(
       map(response => {
         if (response && response.token && response.refreshToken) {
           this.setSession(response);
           this.isAuthenticated$.next(true);
+          this.getUserProfile();
         }
         return response;
       })
@@ -30,17 +34,22 @@ export class AuthService {
   }
 
   register(user: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/register`, user);
+    return this.http.post<any>(`${this.authUrl}/register`, user);
   }
 
   logout(): void {
     this.clearSession();
     this.isAuthenticated$.next(false);
+    this.userProfile$.next(null);
     this.router.navigate(['/']);
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getProfile(): Observable<Profile> {
+    return this.http.get<Profile>(`${this.userUrl}/profile`);
   }
 
   getRefreshToken(): string | null {
@@ -62,7 +71,7 @@ export class AuthService {
       return this.tokenSubject.pipe(
         switchMap(token => {
           if (token) {
-            return this.http.post<LoginResponse>(`${this.baseUrl}/refresh-token`, { refreshToken });
+            return this.http.post<LoginResponse>(`${this.authUrl}/refresh-token`, { refreshToken });
           }
           return throwError(() => new Error('Token refresh failed'));
         })
@@ -71,7 +80,7 @@ export class AuthService {
       this.isRefreshing = true;
       this.tokenSubject.next(null);
 
-      return this.http.post<LoginResponse>(`${this.baseUrl}/refresh-token`, { refreshToken }).pipe(
+      return this.http.post<LoginResponse>(`${this.authUrl}/refresh-token`, { refreshToken }).pipe(
         tap(response => {
           if (response && response.token && response.refreshToken) {
             this.setSession(response);
@@ -95,6 +104,7 @@ export class AuthService {
     localStorage.setItem('refreshToken', response.refreshToken);
     localStorage.setItem('expiresIn', response.expiresIn / 1000 + '');
     this.scheduleTokenRefresh();
+    this.getUserProfile();
   }
 
   private clearSession(): void {
@@ -112,6 +122,16 @@ export class AuthService {
     this.refreshTokenTimeout = setTimeout(() => {
       this.refreshToken().subscribe();
     }, (expiresIn - 60) * 1000);
+  }
+
+  private getUserProfile(): void {
+    this.getProfile().pipe(
+      tap(profile => this.userProfile$.next(profile)),
+      catchError(error => {
+        console.error('Error fetching user profile:', error);
+        return throwError(() => error);
+      })
+    ).subscribe();
   }
 }
 

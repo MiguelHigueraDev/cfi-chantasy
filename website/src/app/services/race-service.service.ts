@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class RaceService {
 
-  private baseUrl = environment.apiUrl + '/api';
+  private baseUrl = environment.baseUrl + '/api';
 
   constructor(private http: HttpClient) {}
 
