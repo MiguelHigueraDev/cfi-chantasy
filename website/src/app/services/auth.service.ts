@@ -29,6 +29,10 @@ export class AuthService {
           this.getUserProfile();
         }
         return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        this.isAuthenticated$.next(false);
+        return throwError(() => error);
       })
     );
   }
@@ -66,7 +70,7 @@ export class AuthService {
       this.logout();
       return throwError(() => new Error('No refresh token available'));
     }
-
+  
     if (this.isRefreshing) {
       return this.tokenSubject.pipe(
         switchMap(token => {
@@ -79,7 +83,7 @@ export class AuthService {
     } else {
       this.isRefreshing = true;
       this.tokenSubject.next(null);
-
+  
       return this.http.post<LoginResponse>(`${this.authUrl}/refresh-token`, { refreshToken }).pipe(
         tap(response => {
           if (response && response.token && response.refreshToken) {
@@ -98,7 +102,7 @@ export class AuthService {
       );
     }
   }
-
+  
   private setSession(response: LoginResponse): void {
     localStorage.setItem('token', response.token);
     localStorage.setItem('refreshToken', response.refreshToken);
